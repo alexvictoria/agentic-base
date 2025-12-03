@@ -1,0 +1,78 @@
+{
+  "name": "base",
+  "version": "1.0.0",
+  "description": "Base repository providing shared devcontainer configuration and automation scaffolding for AI agent workflows",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "devcontainer:build": "devcontainer build --workspace-folder .",
+    "devcontainer:rebuild": "devcontainer build --workspace-folder . --no-cache",
+    "devcontainer:up": "devcontainer up --workspace-folder .",
+    "devcontainer:reup": "devcontainer up --workspace-folder . --remove-existing-container",
+    "devcontainer:bash": "devcontainer exec --workspace-folder . bash",
+    "devcontainer:stop": "docker stop $(docker ps -q --filter ancestor=base-devcontainer)",
+    "setup": "npm ci",
+    "lint": "eslint . --ext .js,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,tsx,json,md}\"",
+    "test": "jest --coverage --passWithNoTests",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "ci": "npm run lint && npm run format:check && npm run test"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/**/*.{js,ts}",
+      "!src/**/*.d.ts",
+      "!src/**/*.test.{js,ts}",
+      "!**/node_modules/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "testMatch": [
+      "**/*.test.ts",
+      "**/*.test.js"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "keywords": [
+    "devcontainer",
+    "ai-agents",
+    "claude",
+    "codex",
+    "automation"
+  ],
+  "author": "",
+  "license": "ISC"
+}
