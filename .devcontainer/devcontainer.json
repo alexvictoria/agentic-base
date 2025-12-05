@@ -16,14 +16,14 @@
   "remoteUser": "node",
   "containerEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
+    "CLAUDE_CONFIG_DIR": "/home/node/.claude",
     "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
   "mounts": [
     "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
-    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.config/claude,target=/home/node/.config/claude,type=bind,consistency=cached",
+    "source=claude-code-config-${devcontainerId},target=/home/node/.claude,type=volume",
     "source=${localEnv:HOME}/.codex,target=/home/node/.codex,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.gemini,target=/home/node/.gemini,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached",
@@ -61,7 +61,7 @@
       }
     }
   },
-  "postCreateCommand": "chmod 700 ~/.ssh 2>/dev/null || true && chmod 600 ~/.ssh/* 2>/dev/null || true && mkdir -p ~/.config/claude ~/.config/gcloud ~/.vercel ~/.railway ~/.gemini 2>/dev/null || true",
+  "postCreateCommand": "chmod 700 ~/.ssh 2>/dev/null || true && chmod 600 ~/.ssh/* 2>/dev/null || true && mkdir -p ~/.config/gcloud ~/.vercel ~/.railway ~/.gemini 2>/dev/null || true",
   "postStartCommand": "sudo /usr/local/bin/init-firewall.sh",
   "waitFor": "postStartCommand"
 }

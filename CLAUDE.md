@@ -122,6 +122,46 @@ The devcontainer is configured to support the **Playwright MCP server** for brow
 - Firewall allows HTTP/HTTPS for browser access
 - Uses `@playwright/mcp` (official Microsoft version)
 
+### CLI Credential Management
+
+This devcontainer uses different credential persistence strategies for each CLI tool:
+
+**Claude Code (Docker Volume - Recommended)**:
+
+- Credentials stored in Docker-managed volume: `claude-code-config-${devcontainerId}`
+- Persists across container rebuilds and `devcontainer-reup` operations
+- **First-time setup**: Run `claude` inside the devcontainer and authenticate
+- Credentials automatically persist for all future container recreations
+- Uses `CLAUDE_CONFIG_DIR=/home/node/.claude` environment variable
+- Stores: sessions, file-history, todos, debug logs, and OAuth credentials
+
+**Why Docker volume for Claude Code?**
+Claude Code stores complex state beyond simple auth tokens (sessions, file-history, debug logs, todos). Docker volumes provide reliable persistence across container recreations, avoiding permission issues and state corruption that can occur with bind mounts on macOS.
+
+**Codex and Gemini (Bind Mounts)**:
+
+- Mount host directories: `~/.codex` and `~/.gemini`
+- Authenticate on host machine first: `codex` or `gemini`
+- Credentials automatically available in container
+- Simple JSON auth files work well with bind mounts
+
+**Other Services (Bind Mounts)**:
+
+- GitHub CLI: `~/.config/gh` (authenticate with `gh auth login` on host)
+- Google Cloud: `~/.config/gcloud` (authenticate with `gcloud auth login` on host)
+- Vercel: `~/.vercel` (authenticate with `vercel login` on host)
+- Railway: `~/.railway` (authenticate with `railway login` on host)
+
+**Credential persistence verification**:
+
+```bash
+# Inside devcontainer
+claude        # Should use existing session or prompt to login
+codex         # Should work immediately (uses host credentials)
+gemini        # Should work immediately (uses host credentials)
+gh auth status # Should show authenticated
+```
+
 ## Build and Test Commands
 
 This repository uses **Makefile as the primary interface** for all development tasks. Makefile targets delegate to npm scripts, which in turn run the actual build tools. This provides a consistent interface across host development, devcontainer development, and GitHub Actions CI.
