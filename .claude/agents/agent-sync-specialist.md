@@ -257,11 +257,11 @@ Structure your synchronization report as follows:
 
 Create a table comparing presence of key directives across existing files:
 
-| Directive | CLAUDE.md | AGENTS.md | GEMINI.md | README.md | .cursorrules | Status |
-|-----------|-----------|-----------|-----------|-----------|--------------|--------|
-| DRY/KISS/YAGNI | ✅ | ✅ | N/A | ✅ | ❌ | Needs sync |
-| Conventional Commits | ✅ | ✅ | N/A | ❌ | ❌ | Needs sync |
-| ... | ... | ... | ... | ... | ... | ... |
+| Directive            | CLAUDE.md | AGENTS.md | GEMINI.md | README.md | .cursorrules | Status     |
+| -------------------- | --------- | --------- | --------- | --------- | ------------ | ---------- |
+| DRY/KISS/YAGNI       | ✅        | ✅        | N/A       | ✅        | ❌           | Needs sync |
+| Conventional Commits | ✅        | ✅        | N/A       | ❌        | ❌           | Needs sync |
+| ...                  | ...       | ...       | ...       | ...       | ...          | ...        |
 
 (Use "N/A" for files that don't exist)
 
@@ -270,13 +270,16 @@ Create a table comparing presence of key directives across existing files:
 List specific changes needed for each existing file:
 
 **CLAUDE.md**
+
 - No changes needed (source of truth)
 
 **AGENTS.md**
+
 - Add section on [new directive]
 - Update [existing section] with [new info]
 
 **README.md**
+
 - Add quick reference for [new workflow]
 
 ### 5. Implementation

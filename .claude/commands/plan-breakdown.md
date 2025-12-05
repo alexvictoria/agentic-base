@@ -55,6 +55,7 @@ You are in architect mode. Read the plan from `.plan/current-plan.md` and autono
 ## Output
 
 After completion, `.plan/` should contain:
+
 - `current-plan.md` (unchanged from plan-chat)
 - `story-001.md`, `story-002.md`, etc. (detailed stories)
 - `dependency-map.md` (dependency graph and implementation order)

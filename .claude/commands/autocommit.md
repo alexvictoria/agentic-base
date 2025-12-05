@@ -27,49 +27,50 @@ Autonomously work through multiple GitHub issues in dependency order, with code 
    a. **Check dependencies**: Verify all prerequisite issues are completed and merged
 
    b. **Execute /work commands in parallel**: For all issues in the current batch (those with no mutual dependencies):
-      - Use SlashCommand tool to invoke `/work <issue_number>` for each issue
-      - If multiple issues can run in parallel, invoke all `/work` commands in a single message
-      - Each `/work` command will:
-        - Create a branch
-        - Implement the feature
-        - Write tests following 100% coverage requirement
-        - **Create commits using Conventional Commits format with issue reference**:
-          - Format: `<type>: <description> (#<issue>)`
-          - Example: `feat: add user authentication (#42)`
-        - Create a PR
-      - Wait for all parallel work to complete before proceeding
+   - Use SlashCommand tool to invoke `/work <issue_number>` for each issue
+   - If multiple issues can run in parallel, invoke all `/work` commands in a single message
+   - Each `/work` command will:
+     - Create a branch
+     - Implement the feature
+     - Write tests following 100% coverage requirement
+     - **Create commits using Conventional Commits format with issue reference**:
+       - Format: `<type>: <description> (#<issue>)`
+       - Example: `feat: add user authentication (#42)`
+     - Create a PR
+   - Wait for all parallel work to complete before proceeding
 
    c. **Launch code review agents**: For each completed PR, use the Task tool to spawn a review sub-agent:
-      ```
-      Task tool with subagent_type='general-purpose'
-      Prompt: "Review PR #<pr_number> for issue #<issue_number>. Check:
-      - Code quality and adherence to patterns
-      - Test coverage and quality
-      - Error handling
-      - Type safety
-      - Acceptance criteria met
-      Provide detailed, actionable feedback."
-      ```
+
+   ```
+   Task tool with subagent_type='general-purpose'
+   Prompt: "Review PR #<pr_number> for issue #<issue_number>. Check:
+   - Code quality and adherence to patterns
+   - Test coverage and quality
+   - Error handling
+   - Type safety
+   - Acceptance criteria met
+   Provide detailed, actionable feedback."
+   ```
 
    d. **Iterate on feedback**: If review finds issues:
-      - Launch another sub-agent to address feedback:
-        ```
-        Task tool with subagent_type='general-purpose'
-        Prompt: "Address the following code review feedback on PR #<pr_number>: <feedback>"
-        ```
-      - Re-review with a fresh sub-agent
-      - Repeat until PR is approved or max iterations (3) reached
+   - Launch another sub-agent to address feedback:
+     ```
+     Task tool with subagent_type='general-purpose'
+     Prompt: "Address the following code review feedback on PR #<pr_number>: <feedback>"
+     ```
+   - Re-review with a fresh sub-agent
+   - Repeat until PR is approved or max iterations (3) reached
 
    e. **Handle stuck states**:
-      - If after 3 iterations we're not converging, mark as "needs human review"
-      - Report to user and skip to next issue
-      - User can later manually resolve and resume
+   - If after 3 iterations we're not converging, mark as "needs human review"
+   - Report to user and skip to next issue
+   - User can later manually resolve and resume
 
    f. **Merge when ready**:
-      - Once code review approves, verify CI/tests pass
-      - Merge the PR using `gh pr merge --auto --squash` (or preferred merge strategy)
-      - Confirm merge completed
-      - Move to next batch
+   - Once code review approves, verify CI/tests pass
+   - Merge the PR using `gh pr merge --auto --squash` (or preferred merge strategy)
+   - Confirm merge completed
+   - Move to next batch
 
 4. **Report progress**: After completing all issues (or getting stuck):
    - Summary of completed issues and merged PRs

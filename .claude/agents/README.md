@@ -9,6 +9,7 @@ This directory contains specialized agent definitions that can be launched as su
 **Purpose**: Full-stack architecture expert for modern web applications
 
 **Expertise**:
+
 - **Frontend**: Next.js App Router, Server Components, TypeScript, React patterns
 - **Backend**: Node.js, Express, Fastify, API architecture
 - **APIs**: REST, JSON:API 1.1, OpenAPI 3.1, GraphQL, Server Actions
@@ -21,6 +22,7 @@ This directory contains specialized agent definitions that can be launched as su
 - **Security**: Input validation, CSRF, XSS, SQL injection prevention
 
 **When to Use**:
+
 - Designing new features or major components
 - Making technology selection decisions
 - Optimizing performance bottlenecks
@@ -36,6 +38,7 @@ This directory contains specialized agent definitions that can be launched as su
 **Purpose**: DRY/YAGNI/KISS refactoring expert for code quality improvement
 
 **Expertise**:
+
 - Identifying and eliminating code duplication (DRY)
 - Removing complexity and over-engineering (KISS)
 - Deleting dead code and speculative features (YAGNI)
@@ -44,6 +47,7 @@ This directory contains specialized agent definitions that can be launched as su
 - Extracting functions and simplifying logic
 
 **When to Use**:
+
 - Code review reveals complexity or duplication
 - Proactive maintenance to keep codebase clean
 - After feature completion to simplify implementation
@@ -59,6 +63,7 @@ This directory contains specialized agent definitions that can be launched as su
 **Purpose**: Documentation synchronization expert for keeping all project documentation consistent
 
 **Expertise**:
+
 - Synchronizing directives across CLAUDE.md, AGENTS.md, GEMINI.md, README.md, .cursorrules
 - Identifying source of truth among documentation files
 - Detecting inconsistencies and contradictions
@@ -66,6 +71,7 @@ This directory contains specialized agent definitions that can be launched as su
 - Creating missing documentation files when requested
 
 **When to Use**:
+
 - After updating any documentation file
 - When adding new development standards or workflows
 - To verify documentation integrity
@@ -112,25 +118,31 @@ Each agent definition file contains:
 To create a new specialized agent:
 
 1. **Create agent definition**: `my-agent.md` in this directory
+
    ```markdown
    # My Agent Title
 
    You are a specialized [domain] expert sub-agent...
 
    ## Your Role
+
    [Description of what this agent does]
 
    ## Core Expertise
+
    [Detailed knowledge and best practices]
 
    ## Your Task
+
    [Instructions for handling user requests]
 
    ## Output Format
+
    [Structure for deliverables]
    ```
 
 2. **Create slash command**: `.claude/commands/my-agent.md`
+
    ```markdown
    # My Agent - Brief Description
 
@@ -139,6 +151,7 @@ To create a new specialized agent:
    ## Instructions for Claude Code
 
    When this command is invoked:
+
    1. Read .claude/agents/my-agent.md
    2. Get user input for [specific need]
    3. Launch sub-agent with Task tool
@@ -153,6 +166,7 @@ To create a new specialized agent:
 ### When to Use Sub-Agents
 
 ✅ **Use sub-agents for**:
+
 - Complex analysis requiring deep exploration
 - Specialized domain expertise (architecture, refactoring, security)
 - Tasks that might consume significant context
@@ -160,6 +174,7 @@ To create a new specialized agent:
 - Situations where multiple perspectives help
 
 ❌ **Don't use sub-agents for**:
+
 - Simple, quick tasks (reading a file, making small edits)
 - Tasks requiring frequent back-and-forth with user
 - Very short operations (< 5 minutes)
@@ -203,6 +218,7 @@ Agents can be combined with the feature development workflow:
 ## Agent Capabilities
 
 All agents have access to:
+
 - **Read**: Read any file in the codebase
 - **Glob**: Find files by pattern
 - **Grep**: Search code for keywords
@@ -211,6 +227,7 @@ All agents have access to:
 - **WebSearch**: Search for information (if needed)
 
 Agents are focused on **analysis and recommendation**, not implementation. They provide:
+
 - Comprehensive analysis
 - Specific recommendations
 - Code examples and patterns
@@ -244,6 +261,7 @@ The main conversation or `/work` command handles actual implementation.
 ## Contributing
 
 When adding new agents:
+
 1. Ensure agent has clear, single purpose
 2. Include comprehensive domain knowledge
 3. Define structured output format

@@ -50,7 +50,8 @@
       "Bash(DOCKER_BUILDKIT=1 docker build:*)",
       "Bash(npm view:*)",
       "Bash(make devcontainer-rebuild:*)",
-      "Bash(make devcontainer-up:*)"
+      "Bash(make devcontainer-up:*)",
+      "Bash(make format:*)"
     ],
     "deny": [],
     "ask": []

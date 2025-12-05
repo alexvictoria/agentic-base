@@ -5,7 +5,9 @@ This directory contains commands for a complete feature development workflow usi
 ## Commands Overview
 
 ### `/plan-chat`
+
 **Interactive planning session**
+
 - Discuss the feature/task with Claude
 - Explore codebase and understand context
 - Make architectural decisions collaboratively
@@ -13,7 +15,9 @@ This directory contains commands for a complete feature development workflow usi
 - Duration: 5-20 minutes depending on complexity
 
 ### `/plan-breakdown`
+
 **Autonomous story breakdown**
+
 - Reads `.plan/current-plan.md`
 - Breaks epic into individually deliverable stories
 - Creates detailed specs for each story in `.plan/story-NNN.md`
@@ -21,14 +25,18 @@ This directory contains commands for a complete feature development workflow usi
 - Generates dependency map for execution order
 
 ### `/plan-create`
+
 **Convert plans to GitHub issues**
+
 - Reads all `.plan/story-*.md` files
 - Creates GitHub issues using `gh` CLI
 - Tracks story → issue number mapping in `.plan/issue-mapping.md`
 - Each issue is fully self-contained with all details
 
 ### `/work <issue_number>`
+
 **Implement a single issue**
+
 - Fetches GitHub issue details
 - Creates feature branch
 - Implements the feature with full testing
@@ -36,7 +44,9 @@ This directory contains commands for a complete feature development workflow usi
 - Returns PR URL
 
 ### `/autocommit <issue_numbers>`
+
 **Autonomous multi-issue workflow** ⭐
+
 - Takes multiple issue numbers (e.g., `4-7` or `4 5 6 7`)
 - Determines dependency order automatically
 - For each issue:
@@ -50,6 +60,7 @@ This directory contains commands for a complete feature development workflow usi
 - Can run for hours autonomously
 
 ### `/architect`
+
 **Full-stack architecture expert sub-agent** 🏗️
 
 Launches a specialized sub-agent (defined in [.claude/agents/fullstack-architect.md](../agents/fullstack-architect.md)) with comprehensive full-stack expertise.
@@ -61,6 +72,7 @@ Launches a specialized sub-agent (defined in [.claude/agents/fullstack-architect
 - **Use when**: Designing features, API architecture, database design, LLM integration, tech decisions
 
 ### `/refactor`
+
 **DRY/YAGNI/KISS refactoring expert sub-agent** 🔧
 
 Launches a specialized sub-agent (defined in [.claude/agents/refactor-expert.md](../agents/refactor-expert.md)) focused on ruthless code simplification.
@@ -73,6 +85,7 @@ Launches a specialized sub-agent (defined in [.claude/agents/refactor-expert.md]
 - **Use when**: Code review reveals complexity, proactive maintenance, post-feature cleanup
 
 ### `/sync-agents`
+
 **Documentation synchronization specialist** 📄
 
 Launches a specialized sub-agent (defined in [.claude/agents/agent-sync-specialist.md](../agents/agent-sync-specialist.md)) for keeping project documentation consistent.
@@ -87,6 +100,7 @@ Launches a specialized sub-agent (defined in [.claude/agents/agent-sync-speciali
 ## Typical Workflow
 
 ### Feature Development Workflow
+
 ```bash
 # 1. Start planning session (use /architect for complex features)
 /plan-chat
@@ -105,6 +119,7 @@ Launches a specialized sub-agent (defined in [.claude/agents/agent-sync-speciali
 ```
 
 ### Architecture and Code Quality Workflow
+
 ```bash
 # Get architectural guidance before implementing complex features
 /architect
@@ -169,6 +184,7 @@ These gates are enforced via husky hooks locally and CI checks remotely.
 ## Customization
 
 Edit the command files in `.claude/commands/` to adjust:
+
 - Testing requirements
 - Code review criteria
 - Merge strategies

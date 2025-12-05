@@ -41,6 +41,7 @@ You are in an interactive planning session with the user. Your goal is to unders
 ## Output
 
 The result of this session should be a clear `.plan/current-plan.md` file that captures:
+
 - What we're building
 - How we're building it (high-level approach)
 - Why we made key decisions

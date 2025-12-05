@@ -9,12 +9,14 @@ This is a base repository for AI agent workflows with strict quality gates and n
 ## Core Principles - ALWAYS ENFORCE
 
 ### DRY (Don't Repeat Yourself)
+
 - Extract repeated logic after 3+ occurrences
 - Prefer duplication over wrong abstractions
 - Use composition to eliminate redundancy
 - Create shared utilities for common operations
 
 ### KISS (Keep It Simple, Stupid)
+
 - Choose the simplest working solution
 - **HARD LIMIT**: Max 20 lines per function
 - **HARD LIMIT**: Max 250 lines per file
@@ -23,6 +25,7 @@ This is a base repository for AI agent workflows with strict quality gates and n
 - No premature optimization
 
 ### YAGNI (You Aren't Gonna Need It)
+
 - Build only what's needed NOW
 - No speculative features or "future-proofing"
 - Delete unused code immediately (NEVER comment out)
@@ -41,6 +44,7 @@ This is a base repository for AI agent workflows with strict quality gates and n
 ## Next.js Best Practices - MANDATORY
 
 ### App Router First
+
 - Use `app/` directory (NOT Pages Router)
 - Server Components by default
 - Only add `'use client'` when absolutely necessary:
@@ -50,18 +54,21 @@ This is a base repository for AI agent workflows with strict quality gates and n
   - Third-party libraries requiring client-side
 
 ### Server Actions
+
 - Prefer Server Actions over API routes for mutations
 - Use `'use server'` directive
 - Proper error handling with try-catch
 - Return serializable data only
 
 ### Data Fetching
+
 - Server Components: Fetch directly in component (async/await)
 - Client Components: Use SWR or React Query
 - NEVER fetch in `useEffect` when RSC can handle it
 - Implement caching: `revalidate`, `cache: 'force-cache'`, cache tags
 
 ### File Organization
+
 ```
 app/
 ├── (routes)/           # Route groups for layout organization
@@ -78,6 +85,7 @@ src/
 ```
 
 ### Next.js Optimizations - USE ALWAYS
+
 - `<Image>` for images (NOT `<img>`)
 - `<Link>` for navigation (NOT `<a>`)
 - `<Font>` for fonts (next/font)
@@ -87,12 +95,14 @@ src/
 ## Code Style - AUTO-ENFORCE
 
 ### Formatting
+
 - **2 spaces** (NO tabs)
 - **100-120 character** line length
 - Trailing newline in all files
 - Single quotes for strings (except JSX attributes)
 
 ### Naming Conventions
+
 - Files/variables: `snake_case` (e.g., `user_profile.ts`)
 - Functions: `camelCase` (e.g., `getUserById`)
 - Classes/types: `PascalCase` (e.g., `UserProfile`)
@@ -100,6 +110,7 @@ src/
 - Private variables: `_prefixedCamelCase` (e.g., `_internalState`)
 
 ### Imports
+
 - Group imports: external → internal → relative
 - Use TypeScript path aliases (`@/`)
 - Sort alphabetically within groups
@@ -108,11 +119,13 @@ src/
 ## Testing - 100% COVERAGE REQUIRED
 
 ### Test Files
+
 - Location: `tests/` mirroring runtime code paths
 - Naming: `*.test.ts` / `*.test.js` (Node) or `test_*.py` (Python)
 - Shared fixtures in `tests/fixtures/`
 
 ### Test Requirements
+
 - **100% code coverage** - NO EXCEPTIONS
 - Fast and deterministic (no sleeps/waits)
 - Minimal static JSON; prefer factories
@@ -120,6 +133,7 @@ src/
 - Mock external dependencies
 
 ### Test Stack
+
 - Unit: Vitest + Testing Library
 - E2E: Playwright
 - Run before every commit: `make test` or `npm test`
@@ -127,11 +141,13 @@ src/
 ## Git Workflow - STRICT
 
 ### Conventional Commits - MANDATORY
+
 Format: `<type>(<scope>): <description> (#<issue>)`
 
 **MUST reference GitHub issue** when available!
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `chore`: Maintenance
@@ -144,17 +160,20 @@ Format: `<type>(<scope>): <description> (#<issue>)`
 - `style`: Formatting
 
 **Examples:**
+
 - `feat: add dark mode toggle (#123)`
 - `fix: resolve memory leak in data processor (#456)`
 - `docs: update API documentation (#789)`
 - `test: add unit tests for auth service (#234)`
 
 ### Git Hooks - NEVER SKIP
+
 - Pre-commit: lint-staged (formatting, linting, type-check)
 - Pre-push: tests (optional)
 - **NEVER use `--no-verify`** - hooks exist for a reason
 
 ### Branch Strategy
+
 - Never commit directly to `main`
 - Branch naming: `feat/issue-123-description`, `fix/issue-456-description`
 - Keep branches focused and short-lived
@@ -162,18 +181,21 @@ Format: `<type>(<scope>): <description> (#<issue>)`
 ## Security - ZERO TOLERANCE
 
 ### Secrets Management
+
 - **NEVER commit secrets** (API keys, tokens, passwords)
 - Store in `.env` (gitignored)
 - Provide `.env.example` with placeholders
 - Use environment variables for all sensitive data
 
 ### Dependencies
+
 - Commit lockfiles (`package-lock.json`, `pnpm-lock.yaml`)
 - Run `npm audit` / `pip-audit` regularly
 - Update dependencies via PRs, not direct commits
 - Review dependency changes in PRs
 
 ### Network Isolation
+
 - Devcontainer has strict firewall rules
 - Update `init-firewall.sh` when adding external dependencies
 - Test connectivity after firewall changes
@@ -209,6 +231,7 @@ Ask yourself:
 ## Code Review Standards
 
 ### Before Requesting Review
+
 - All tests pass locally
 - 100% coverage maintained
 - Pre-commit hooks pass
@@ -218,6 +241,7 @@ Ask yourself:
 - Documentation updated
 
 ### PR Requirements
+
 - Summary of changes
 - Linked GitHub issue
 - Screenshots for UI changes
@@ -228,6 +252,7 @@ Ask yourself:
 ## Development Environment
 
 ### Devcontainer
+
 - Node.js 24 LTS (check `.nvmrc`)
 - Python 3 for helper scripts
 - Claude Code, Codex, and Gemini CLIs pre-installed
@@ -241,6 +266,7 @@ This repository uses **npm as the primary build system**, with **Makefile provid
 Run `make help` to see all available targets.
 
 ### Setup Commands
+
 ```bash
 # Start Colima (macOS)
 colima start --cpu 4 --memory 8 --vm-type vz
@@ -278,6 +304,7 @@ make ci
 ## AI Assistant Behavior
 
 ### When Writing Code
+
 1. Check if file exists - prefer editing over creating
 2. Follow DRY, KISS, YAGNI principles
 3. Enforce TypeScript strict mode
@@ -287,6 +314,7 @@ make ci
 7. Use Conventional Commits format
 
 ### When Refactoring
+
 1. Identify DRY/KISS/YAGNI violations
 2. Provide before/after examples
 3. Measure improvement (lines, complexity, duplication)
@@ -294,6 +322,7 @@ make ci
 5. Maintain 100% coverage
 
 ### When Reviewing Code
+
 1. Check for anti-patterns
 2. Verify HARD LIMITS (20 lines/function, 250 lines/file, 3 nesting levels)
 3. Ensure TypeScript strict mode compliance
@@ -308,6 +337,7 @@ This repository includes specialized sub-agents in `.claude/agents/` that provid
 ### `/architect` - Full-Stack Architecture Expert
 
 Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full-stack expertise:
+
 - Analyzes codebase to understand existing patterns
 - Proposes 2-3 architectural approaches with detailed trade-offs
 - Provides specific implementation guidance with code examples
@@ -325,6 +355,7 @@ Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full
 ### `/refactor` - DRY/YAGNI/KISS Refactoring Expert
 
 Launches a specialized sub-agent (`refactor-expert`) focused on ruthless code simplification:
+
 - Identifies all DRY, KISS, YAGNI violations with specific file:line references
 - Enforces HARD LIMITS: 20 lines/function, 250 lines/file, 3 levels nesting
 - Removes dead code, commented code, unused abstractions
@@ -386,12 +417,14 @@ This repository includes custom slash commands in `.claude/commands/` for featur
 When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to verify work before declaring completion:
 
 **Requirements**:
+
 - All screenshots must be 600x800 pixels (configured in `playwright.config.ts`)
 - Always use headless mode for verification (default setting)
 - Verify UI in browser before marking task complete
 - Store verification screenshots in `screenshots/` directory (committed to repo)
 
 **Workflow**:
+
 1. Implement UI changes
 2. Use Playwright MCP to verify in headless mode:
    ```
@@ -402,6 +435,7 @@ When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to veri
 5. Include screenshots in PR for review
 
 **Example verification commands**:
+
 ```
 Use Playwright to verify the login page renders correctly at localhost:3000/login
 Use Playwright to test the dark mode toggle on the settings page
@@ -409,6 +443,7 @@ Use Playwright to capture the mobile viewport of the dashboard
 ```
 
 **Benefits**:
+
 - Catch UI regressions before committing
 - Small screenshots (600x800) save repo space
 - Headless mode enables fast, automated verification
@@ -426,6 +461,7 @@ Use Playwright to capture the mobile viewport of the dashboard
 ## Quick Reference
 
 **Max Limits:**
+
 - Function: 20 lines
 - File: 250 lines
 - Nesting: 3 levels
@@ -436,11 +472,13 @@ Use Playwright to capture the mobile viewport of the dashboard
 `<type>(<scope>): <description> (#<issue>)`
 
 **File Naming:**
+
 - `snake_case.ts` (files)
 - `camelCase()` (functions)
 - `PascalCase` (classes/types)
 
 **Always Run:**
+
 ```bash
 make test    # Before commit
 make lint    # Before commit

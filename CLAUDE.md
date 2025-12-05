@@ -180,6 +180,33 @@ make devcontainer-bash     - Open bash in devcontainer
 
 ## Code Quality Standards
 
+### Completion Requirements (Definition of Done)
+
+**CRITICAL**: Before claiming ANY task is complete, you MUST verify all quality gates pass:
+
+1. **Run `make lint`** - All ESLint warnings and errors MUST be fixed
+   - Zero warnings allowed
+   - Zero errors allowed
+   - If lint fails, the task is NOT complete
+
+2. **Run `make test`** - 100% code coverage REQUIRED
+   - All tests must pass
+   - Coverage must be 100% for branches, functions, lines, and statements
+   - If coverage is less than 100%, the task is NOT complete
+
+3. **Run `make format-check`** - All files MUST be properly formatted
+   - Zero formatting violations allowed
+   - Run `make format` to auto-fix if needed
+   - If format-check fails, the task is NOT complete
+
+4. **Run `make build`** - TypeScript compilation MUST succeed
+   - Zero build errors allowed
+   - If build fails, the task is NOT complete
+
+**Shortcut**: Run `make ci` to check all gates at once (lint + format-check + test + build)
+
+**Never** claim completion without verifying these gates. **Never** commit code that fails these checks.
+
 ### Coverage and Testing Requirements
 
 - **100% code coverage** required for all commits, pushes, and PR merges

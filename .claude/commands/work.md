@@ -26,6 +26,7 @@ Fetch a GitHub issue, implement it completely, and create a pull request.
    - Skip this step for straightforward bug fixes or simple additions
 
 4. **Check out a branch**: Create a new branch for this work:
+
    ```bash
    git checkout -b issue-<issue_number>-<short-description>
    ```
@@ -69,13 +70,14 @@ Fetch a GitHub issue, implement it completely, and create a pull request.
    - If hooks modify files (e.g., prettier), review and re-commit if needed
 
 10. **Create pull request**: Use `gh pr create`:
-   - Title: "Fixes #<issue_number>: <issue title>"
-   - Body should include:
-     - Summary of changes
-     - How to test
-     - Checklist of acceptance criteria (all checked)
-     - Notes on any implementation decisions
-   - Link to the issue (use "Fixes #<issue_number>")
+
+- Title: "Fixes #<issue_number>: <issue title>"
+- Body should include:
+  - Summary of changes
+  - How to test
+  - Checklist of acceptance criteria (all checked)
+  - Notes on any implementation decisions
+- Link to the issue (use "Fixes #<issue_number>")
 
 ## Guidelines
 
@@ -91,6 +93,7 @@ Fetch a GitHub issue, implement it completely, and create a pull request.
 ## When to Use /architect
 
 Use the `/architect` command when the issue involves:
+
 - Choosing between multiple implementation approaches
 - Designing new features or systems
 - Making technology decisions (which library, pattern, etc.)
@@ -100,6 +103,7 @@ Use the `/architect` command when the issue involves:
 - API design decisions
 
 Skip `/architect` for:
+
 - Simple bug fixes with obvious solutions
 - Straightforward feature additions following existing patterns
 - Minor tweaks or adjustments

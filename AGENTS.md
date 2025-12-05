@@ -11,6 +11,7 @@ This repository defines specialized AI agent personas that enforce world-class d
 A world-class architect specialized in Node.js and Next.js development following modern best practices:
 
 **Core Principles:**
+
 - **Next.js App Router First**: Always use App Router (`app/`) over Pages Router unless explicitly maintaining legacy code
 - **Server Components by Default**: Use React Server Components (RSC) as the default; only add `'use client'` when necessary (interactivity, browser APIs, hooks)
 - **TypeScript Strict Mode**: Enable `strict: true` in `tsconfig.json`; no `any` types without explicit justification
@@ -18,6 +19,7 @@ A world-class architect specialized in Node.js and Next.js development following
 - **Performance by Default**: Optimize for Core Web Vitals (LCP, FID, CLS)
 
 **Architecture Standards:**
+
 - Use Server Actions for mutations instead of API routes when possible
 - Implement proper loading states with `loading.tsx` and Suspense boundaries
 - Colocate components, tests, and styles in feature directories
@@ -26,12 +28,14 @@ A world-class architect specialized in Node.js and Next.js development following
 - Leverage Next.js built-in optimizations (Image, Font, Link components)
 
 **Data Fetching:**
+
 - Server Components: Fetch data directly in components
 - Client Components: Use SWR or React Query for client-side fetching
 - Never fetch in `useEffect` when Server Components can handle it
 - Implement proper caching strategies (revalidate, cache tags)
 
 **Code Organization:**
+
 ```
 app/
 ├── (routes)/           # Route groups for layout organization
@@ -48,6 +52,7 @@ src/
 ```
 
 **Technology Stack:**
+
 - **Runtime**: Node.js 24 LTS (check `.nvmrc`)
 - **Framework**: Next.js 14+ with App Router
 - **Styling**: Tailwind CSS (utility-first) or CSS Modules
@@ -56,6 +61,7 @@ src/
 - **Testing**: Vitest + Testing Library (unit), Playwright (e2e)
 
 **TypeScript Standards:**
+
 - Enable `strict: true` in `tsconfig.json`
 - **No `any` types** without explicit justification
 - Use proper type inference; avoid unnecessary annotations
@@ -68,12 +74,14 @@ An obsessive code quality agent enforcing simplicity and maintainability:
 **Core Principles:**
 
 **DRY (Don't Repeat Yourself):**
+
 - Extract repeated logic into reusable functions/components
 - Create shared utilities for common operations
 - Use composition over duplication
 - **Exception**: Prefer duplication over the wrong abstraction; three uses before abstracting
 
 **KISS (Keep It Simple, Stupid):**
+
 - Choose the simplest solution that works
 - Avoid premature optimization
 - Prefer explicit over clever code
@@ -81,6 +89,7 @@ An obsessive code quality agent enforcing simplicity and maintainability:
 - Avoid deeply nested conditionals (max 3 levels)
 
 **YAGNI (You Aren't Gonna Need It):**
+
 - Only build what's required NOW
 - No "future-proofing" or speculative features
 - Delete unused code immediately (don't comment it out)
@@ -88,6 +97,7 @@ An obsessive code quality agent enforcing simplicity and maintainability:
 - Build for current requirements, refactor when needed
 
 **Code Quality Rules:**
+
 - **Functions**: Single responsibility, max 20 lines, 2-3 parameters max
 - **Files**: Max 250 lines; split into smaller modules when exceeded
 - **Complexity**: Cyclomatic complexity ≤ 10 per function
@@ -96,6 +106,7 @@ An obsessive code quality agent enforcing simplicity and maintainability:
 - **Magic Numbers**: Extract to named constants: `const MAX_RETRIES = 3`
 
 **Anti-Patterns to Reject:**
+
 - Over-engineering simple features
 - Premature abstractions (wait for 3+ uses)
 - Deep inheritance hierarchies (prefer composition)
@@ -104,6 +115,7 @@ An obsessive code quality agent enforcing simplicity and maintainability:
 - Commented-out code (use git history)
 
 **Refactoring Checklist:**
+
 - Can this function be split into smaller units?
 - Is this abstraction actually reducing complexity?
 - Are we building for hypothetical future needs?
@@ -111,6 +123,7 @@ An obsessive code quality agent enforcing simplicity and maintainability:
 - Would a junior developer understand this code?
 
 ## Project Structure & Module Organization
+
 - `.devcontainer/` holds the primary configuration (`devcontainer.json`, Dockerfile, and scripts/). Keep editor/tool defaults there.
 - `scripts/` contains CLI helpers for local and CI usage (e.g., bootstrapping devcontainers, invoking agents, syncing configs).
 - `automation/agents/` (or similar) should store agent prompts, templates, and adapter code; keep provider-specific secrets out of the repo.
@@ -120,6 +133,7 @@ An obsessive code quality agent enforcing simplicity and maintainability:
 ## Network Isolation
 
 The devcontainer runs with **strict iptables firewall rules** that:
+
 - Block all outbound traffic by default
 - Allow only specific domains via ipset (GitHub, npm registry, Anthropic API, VS Code marketplace, etc.)
 - Allow HTTP (port 80) and HTTPS (port 443) for Playwright browser automation
@@ -134,12 +148,14 @@ The devcontainer runs with **strict iptables firewall rules** that:
 This devcontainer includes support for **MCP (Model Context Protocol)** servers, which extend AI assistant capabilities with external tools and services.
 
 **Playwright MCP Server:**
+
 - Browser automation (Chromium, Firefox, WebKit)
 - Web scraping and testing
 - Accessibility snapshot analysis
 - Real-time web interaction
 
 **Setup:**
+
 ```bash
 # After starting devcontainer
 .devcontainer/setup-playwright-mcp.sh
@@ -163,12 +179,14 @@ This repository uses **npm as the primary build system**, with **Makefile provid
 Run `make help` to see all available targets.
 
 ## Coding Style & Naming Conventions
+
 - Default to 2-space indentation, 100–120 char lines, and trailing newline; avoid tabs unless required by language.
 - snake_case for filenames and variables; camelCase for functions; PascalCase for exported classes/types.
 - Enforce formatters/linters: Prettier + ESLint for Node 24; Black + Ruff for any Python warehouse utilities. Wire them into `make lint`/`make format`.
 - Keep agent-facing scripts small, idempotent, and documented with short header comments describing inputs/outputs.
 
 ## Testing Guidelines
+
 - Prefer fast, deterministic tests; name files `*.test.ts` / `*.test.js` for Node and `test_*.py` for Python. Add integration tests for agent entry points and devcontainer provisioning.
 - Gate commits, pushes, and PR merges on `make test` / `npm test` with **100% code coverage**; document any explicit exclusions and rationale in the test config.
 - Use fixtures/factories for agent payloads; avoid large static JSON—favor minimal representative examples.
@@ -176,6 +194,7 @@ Run `make help` to see all available targets.
 ## Husky Git Hooks
 
 All projects should use husky for pre-commit enforcement:
+
 - Linting and formatting (lint-staged)
 - Type checking (TypeScript, mypy)
 - Unit tests (optional in pre-push)
@@ -206,6 +225,7 @@ This repository includes specialized sub-agents in `.claude/agents/` that provid
 ### `/architect` - Full-Stack Architecture Expert
 
 Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full-stack expertise to provide architectural guidance:
+
 - Analyzes your codebase to understand existing patterns
 - Proposes 2-3 architectural approaches with detailed trade-offs
 - Provides specific implementation guidance with code examples
@@ -223,6 +243,7 @@ Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full
 ### `/refactor` - DRY/YAGNI/KISS Refactoring Expert
 
 Launches a specialized sub-agent (`refactor-expert`) focused on ruthless code simplification:
+
 - Identifies all DRY, KISS, YAGNI violations with specific file:line references
 - Enforces HARD LIMITS: 20 lines/function, 250 lines/file, 3 levels nesting
 - Removes dead code, commented code, unused abstractions
@@ -284,12 +305,14 @@ This repository includes custom slash commands in `.claude/commands/` for featur
 When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to verify work before declaring completion:
 
 **Requirements**:
+
 - All screenshots must be 600x800 pixels (configured in `playwright.config.ts`)
 - Always use headless mode for verification (default setting)
 - Verify UI in browser before marking task complete
 - Store verification screenshots in `screenshots/` directory (committed to repo)
 
 **Workflow**:
+
 1. Implement UI changes
 2. Use Playwright MCP to verify in headless mode:
    ```
@@ -300,6 +323,7 @@ When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to veri
 5. Include screenshots in PR for review
 
 **Example verification commands**:
+
 ```
 Use Playwright to verify the login page renders correctly at localhost:3000/login
 Use Playwright to test the dark mode toggle on the settings page
@@ -307,12 +331,14 @@ Use Playwright to capture the mobile viewport of the dashboard
 ```
 
 **Benefits**:
+
 - Catch UI regressions before committing
 - Small screenshots (600x800) save repo space
 - Headless mode enables fast, automated verification
 - Screenshots provide visual documentation in PRs
 
 ## Security & Configuration
+
 - Never commit secrets; store provider keys in local `.env` and add `.env.example` with placeholders. Ensure `.env` is gitignored.
 - Keep lockfiles committed for reproducible containers; run dependency scanning (`npm audit`, `pip-audit`, etc.) as part of CI once set up.
 - Network isolation via firewall enforces external dependency allowlist

@@ -31,6 +31,7 @@ See `AGENTS.md` for complete architectural guidelines and technology stack.
 The devcontainer runs with **strict iptables firewall rules** blocking all outbound traffic by default. Only specific domains are allowed via `init-firewall.sh`.
 
 **MCP (Model Context Protocol)** servers extend AI capabilities:
+
 - **Playwright MCP**: Browser automation for UI verification
 - Setup: `.devcontainer/setup-playwright-mcp.sh`
 - Verify: `claude mcp list`
@@ -92,6 +93,7 @@ Run `make help` to see all available targets.
 ## Network Isolation
 
 The devcontainer runs with **strict iptables firewall rules** that:
+
 - Block all outbound traffic by default
 - Allow only specific domains via ipset (GitHub, npm registry, Anthropic API, VS Code marketplace, etc.)
 - Allow HTTP (port 80) and HTTPS (port 443) for Playwright browser automation
@@ -130,6 +132,7 @@ See `.claude/commands/README.md` for complete command documentation.
 ### Husky Git Hooks
 
 All projects use husky for pre-commit enforcement:
+
 - Linting and formatting (lint-staged)
 - Type checking (TypeScript, mypy)
 - **NEVER skip hooks with `--no-verify`**
@@ -141,6 +144,7 @@ Installs automatically via `npm install` (using the `prepare` script in package.
 For Next.js projects, follow these architectural guidelines:
 
 **Next.js Best Practices:**
+
 - Use **App Router** (`app/`) as default
 - **Server Components First**: Only add `'use client'` when needed (interactivity, hooks, browser APIs)
 - Use **Server Actions** for mutations over API routes
@@ -148,12 +152,14 @@ For Next.js projects, follow these architectural guidelines:
 - Leverage Next.js optimizations: `<Image>`, `<Link>`, `<Font>`
 
 **TypeScript:**
+
 - Enable `strict: true` in `tsconfig.json`
 - No `any` types without explicit justification
 - Use proper type inference; avoid unnecessary annotations
 - Define types in `src/types/` for shared interfaces
 
 **Code Organization:**
+
 ```
 app/                    # Next.js App Router
 ├── (routes)/           # Route groups
@@ -181,12 +187,14 @@ src/
 When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to verify work before declaring completion:
 
 **Requirements**:
+
 - All screenshots must be 600x800 pixels (configured in `playwright.config.ts`)
 - Always use headless mode for verification (default setting)
 - Verify UI in browser before marking task complete
 - Store verification screenshots in `screenshots/` directory (committed to repo)
 
 **Workflow**:
+
 1. Implement UI changes
 2. Use Playwright MCP to verify in headless mode:
    ```
@@ -197,6 +205,7 @@ When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to veri
 5. Include screenshots in PR for review
 
 **Example verification commands**:
+
 ```
 Use Playwright to verify the login page renders correctly at localhost:3000/login
 Use Playwright to test the dark mode toggle on the settings page
@@ -204,6 +213,7 @@ Use Playwright to capture the mobile viewport of the dashboard
 ```
 
 **Benefits**:
+
 - Catch UI regressions before committing
 - Small screenshots (600x800) save repo space
 - Headless mode enables fast, automated verification

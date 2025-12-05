@@ -13,14 +13,17 @@ This is a base repository providing shared devcontainer configuration and automa
 The primary development environment is a Docker-based devcontainer with network restrictions:
 
 **Prerequisites:**
+
 - Colima must be running: `colima start --cpu 4 --memory 8 --vm-type vz`
 - Set Docker context: `docker context use colima`
 
 **Start devcontainer:**
+
 - CLI: `devcontainer up --workspace-folder .`
 - VS Code: "Reopen in Container" command
 
 **Container specifications:**
+
 - Base image: `node:24-bookworm`
 - User: `node` (non-root)
 - Node version: 24 (check for `.nvmrc`)
@@ -31,6 +34,7 @@ The primary development environment is a Docker-based devcontainer with network 
 ### Network Isolation
 
 The devcontainer runs with **strict iptables firewall rules** that:
+
 - Block all outbound traffic by default
 - Allow only specific domains via ipset (GitHub, npm registry, Anthropic API, VS Code marketplace, etc.)
 - Allow HTTP (port 80) and HTTPS (port 443) for Playwright browser automation
@@ -45,12 +49,14 @@ The devcontainer runs with **strict iptables firewall rules** that:
 This devcontainer includes support for **MCP (Model Context Protocol)** servers, which extend AI assistant capabilities with external tools and services.
 
 **Playwright MCP Server:**
+
 - Browser automation (Chromium, Firefox, WebKit)
 - Web scraping and testing
 - Accessibility snapshot analysis
 - Real-time web interaction
 
 **Setup:**
+
 ```bash
 # After starting devcontainer
 .devcontainer/setup-playwright-mcp.sh
@@ -85,21 +91,25 @@ Run `make help` to see all available targets.
 ### Code Style
 
 **Indentation and Formatting:**
+
 - 2 spaces (no tabs unless language-required)
 - Line length: 100-120 characters
 - Trailing newline in all files
 
 **Naming Conventions:**
+
 - Files/variables: `snake_case`
 - Functions: `camelCase`
 - Classes/types: `PascalCase`
 
 **Formatters/Linters:**
+
 - Node: Prettier + ESLint
 - Python: Black + Ruff
 
 **Commits:**
 Use [Conventional Commits](https://www.conventionalcommits.org/) format:
+
 - Format: `<type>(<scope>): <description> (#<issue>)`
 - Types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`, `perf`, `ci`, `build`, `style`
 - **MUST reference GitHub issue** when available: e.g., `feat: add user authentication (#42)`
@@ -113,6 +123,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/) format:
 ### Git Hooks
 
 All projects use husky for pre-commit enforcement:
+
 - Linting and formatting (lint-staged)
 - Type checking (TypeScript, mypy)
 - Unit tests (optional in pre-push)
@@ -127,17 +138,20 @@ Husky installs automatically via `npm install` (using the `prepare` script in pa
 All code in this repository must adhere to **DRY, KISS, and YAGNI** principles:
 
 **DRY (Don't Repeat Yourself):**
+
 - Extract repeated logic after 3+ occurrences
 - Prefer duplication over wrong abstractions
 - Use composition to eliminate redundancy
 
 **KISS (Keep It Simple, Stupid):**
+
 - Choose the simplest working solution
 - Max 20 lines per function, 250 lines per file
 - Avoid clever code; prefer explicit and readable
 - Max 3 levels of nesting in conditionals
 
 **YAGNI (You Aren't Gonna Need It):**
+
 - Build only what's needed NOW
 - No speculative features or "future-proofing"
 - Delete unused code immediately (never comment out)
@@ -148,6 +162,7 @@ All code in this repository must adhere to **DRY, KISS, and YAGNI** principles:
 For Node.js and Next.js projects, follow these architectural guidelines:
 
 **Next.js Best Practices:**
+
 - Use **App Router** (`app/`) as default
 - **Server Components First**: Only add `'use client'` when needed (interactivity, hooks, browser APIs)
 - Use **Server Actions** for mutations over API routes
@@ -155,18 +170,21 @@ For Node.js and Next.js projects, follow these architectural guidelines:
 - Leverage Next.js optimizations: `<Image>`, `<Link>`, `<Font>`
 
 **TypeScript:**
+
 - Enable `strict: true` in `tsconfig.json`
 - No `any` types without explicit justification
 - Use proper type inference; avoid unnecessary annotations
 - Define types in `src/types/` for shared interfaces
 
 **Data Fetching:**
+
 - Server Components: Fetch directly in component
 - Client Components: Use SWR or React Query
 - Never fetch in `useEffect` when RSC can handle it
 - Implement caching strategies (revalidate, cache tags)
 
 **Code Organization:**
+
 ```
 app/                    # Next.js App Router
 ├── (routes)/           # Route groups
@@ -182,6 +200,7 @@ src/
 ```
 
 **Technology Stack:**
+
 - **Runtime**: Node.js 24 LTS
 - **Framework**: Next.js 14+ with App Router
 - **Styling**: Tailwind CSS or CSS Modules
@@ -192,6 +211,7 @@ src/
 ### Configuration Files
 
 Place at root for AI assistant discoverability:
+
 - `Makefile`, `package.json`, `pyproject.toml`, `.tool-versions`
 - Language/runtime configs should be easily detectable
 
@@ -247,6 +267,7 @@ This repository includes specialized sub-agents in `.claude/agents/` that provid
 ### `/architect` - Full-Stack Architecture Expert
 
 Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full-stack expertise to provide architectural guidance:
+
 - Analyzes your codebase to understand existing patterns
 - Proposes 2-3 architectural approaches with detailed trade-offs
 - Provides specific implementation guidance with code examples
@@ -264,6 +285,7 @@ Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full
 ### `/refactor` - DRY/YAGNI/KISS Refactoring Expert
 
 Launches a specialized sub-agent (`refactor-expert`) focused on ruthless code simplification:
+
 - Identifies all DRY, KISS, YAGNI violations with specific file:line references
 - Enforces HARD LIMITS: 20 lines/function, 250 lines/file, 3 levels nesting
 - Removes dead code, commented code, unused abstractions
@@ -325,12 +347,14 @@ This repository includes custom slash commands in `.claude/commands/` for featur
 When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to verify work before declaring completion:
 
 **Requirements**:
+
 - All screenshots must be 600x800 pixels (configured in `playwright.config.ts`)
 - Always use headless mode for verification (default setting)
 - Verify UI in browser before marking task complete
 - Store verification screenshots in `screenshots/` directory (committed to repo)
 
 **Workflow**:
+
 1. Implement UI changes
 2. Use Playwright MCP to verify in headless mode:
    ```
@@ -341,6 +365,7 @@ When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to veri
 5. Include screenshots in PR for review
 
 **Example verification commands**:
+
 ```
 Use Playwright to verify the login page renders correctly at localhost:3000/login
 Use Playwright to test the dark mode toggle on the settings page
@@ -348,6 +373,7 @@ Use Playwright to capture the mobile viewport of the dashboard
 ```
 
 **Benefits**:
+
 - Catch UI regressions before committing
 - Small screenshots (600x800) save repo space
 - Headless mode enables fast, automated verification

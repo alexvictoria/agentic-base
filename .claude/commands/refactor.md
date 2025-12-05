@@ -26,7 +26,6 @@ When this command is invoked:
    ```
 
 3. **Read the code if file/directory provided**:
-
    - Use Read tool for specific files
    - Use Glob tool for directories
 
