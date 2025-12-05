@@ -118,9 +118,11 @@ make clean         - Remove node_modules and coverage
 ### Devcontainer Management
 
 ```
-make devcontainer-build  - Build devcontainer
-make devcontainer-up     - Start devcontainer
-make devcontainer-bash   - Open bash in devcontainer
+make devcontainer-build    - Build devcontainer
+make devcontainer-rebuild  - Rebuild devcontainer (--no-cache)
+make devcontainer-up       - Start devcontainer
+make devcontainer-reup     - Restart devcontainer (--remove-existing-container)
+make devcontainer-bash     - Open bash in devcontainer
 ```
 
 ## Code Quality Standards

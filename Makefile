@@ -12,7 +12,7 @@
 #   make clean    - Remove generated files
 #   make help     - Show this help message
 
-.PHONY: help setup install build build-watch lint lint-fix format format-check test test-watch test-coverage ci clean devcontainer-build devcontainer-up devcontainer-bash
+.PHONY: help setup install build build-watch lint lint-fix format format-check test test-watch test-coverage ci clean devcontainer-build devcontainer-rebuild devcontainer-up devcontainer-reup devcontainer-bash
 
 # Default target
 .DEFAULT_GOAL := help
@@ -36,9 +36,11 @@ help:
 	@echo "  clean          - Remove node_modules and coverage"
 	@echo ""
 	@echo "  Devcontainer targets:"
-	@echo "  devcontainer-build   - Build devcontainer"
-	@echo "  devcontainer-up      - Start devcontainer"
-	@echo "  devcontainer-bash    - Open bash in devcontainer"
+	@echo "  devcontainer-build     - Build devcontainer"
+	@echo "  devcontainer-rebuild   - Rebuild devcontainer (--no-cache)"
+	@echo "  devcontainer-up        - Start devcontainer"
+	@echo "  devcontainer-reup      - Restart devcontainer (--remove-existing-container)"
+	@echo "  devcontainer-bash      - Open bash in devcontainer"
 	@echo ""
 
 ## setup: Install dependencies
@@ -96,9 +98,17 @@ clean:
 devcontainer-build:
 	npm run devcontainer:build
 
+## devcontainer-rebuild: Rebuild devcontainer (--no-cache)
+devcontainer-rebuild:
+	npm run devcontainer:rebuild
+
 ## devcontainer-up: Start devcontainer
 devcontainer-up:
 	npm run devcontainer:up
+
+## devcontainer-reup: Restart devcontainer (--remove-existing-container)
+devcontainer-reup:
+	npm run devcontainer:reup
 
 ## devcontainer-bash: Open bash in devcontainer
 devcontainer-bash:
