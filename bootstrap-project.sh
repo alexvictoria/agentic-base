@@ -115,6 +115,7 @@ copy_config() {
     copy_item "$SCRIPT_DIR/.eslintrc.json"
     copy_item "$SCRIPT_DIR/.tool-versions"
     copy_item "$SCRIPT_DIR/README.md"
+    copy_item "$SCRIPT_DIR/.github"
 }
 
 # Execute based on mode

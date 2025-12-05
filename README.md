@@ -8,23 +8,39 @@ This repository enforces **world-class development standards** through specializ
 
 ### DRY, KISS, YAGNI Philosophy
 
-All code must follow these core principles:
+All code must follow these core principles with **HARD LIMITS**:
 
 - **DRY (Don't Repeat Yourself)**: Extract repeated logic after 3+ uses; prefer duplication over wrong abstractions
-- **KISS (Keep It Simple, Stupid)**: Choose the simplest solution; max 20 lines/function, 250 lines/file; avoid cleverness
+- **KISS (Keep It Simple, Stupid)**: Choose the simplest solution; **max 20 lines/function, 250 lines/file, 3 levels nesting**; avoid cleverness
 - **YAGNI (You Aren't Gonna Need It)**: Build only what's needed NOW; no speculative features; delete unused code immediately
 
-### Next.js/Node.js Standards
+### Next.js/Node.js Standards (Node.js 24)
 
 For Next.js projects, we follow modern best practices:
 
 - **App Router First**: Use `app/` directory; Server Components by default
-- **TypeScript Strict**: `strict: true` in tsconfig; no `any` without justification
+- **TypeScript Strict**: `strict: true` in tsconfig; **ZERO `any` types** without justification
 - **Server Actions**: Prefer over API routes for mutations
 - **Performance**: Optimize for Core Web Vitals; leverage Next.js built-in optimizations
 - **Progressive Enhancement**: Build features that work without JavaScript when possible
 
 See `AGENTS.md` for complete architectural guidelines and technology stack.
+
+## Network Isolation & MCP
+
+The devcontainer runs with **strict iptables firewall rules** blocking all outbound traffic by default. Only specific domains are allowed via `init-firewall.sh`.
+
+**MCP (Model Context Protocol)** servers extend AI capabilities:
+- **Playwright MCP**: Browser automation for UI verification
+- Setup: `.devcontainer/setup-playwright-mcp.sh`
+- Verify: `claude mcp list`
+
+## Specialized Sub-Agents
+
+AI-powered experts in `.claude/agents/`:
+
+- **`/architect`**: Full-stack architecture guidance (Next.js, APIs, databases, LLM integration)
+- **`/refactor`**: Ruthless code simplification (enforces DRY, KISS, YAGNI hard limits)
 
 ## Coverage and Quality Gates
 
@@ -60,14 +76,26 @@ make ci             # Run full CI pipeline locally
 This repository includes custom Claude Code slash commands for automated workflows:
 
 ```bash
-/setup-husky        # Initialize git hooks
+/setup-husky        # Initialize git hooks (NEVER skip with --no-verify)
+/architect          # Launch architecture expert sub-agent
+/refactor           # Launch refactoring expert sub-agent
 /plan-chat          # Interactive feature planning
 /plan-breakdown     # Break epic into stories
 /plan-create        # Create GitHub issues
+/work 42            # Implement single issue
 /autocommit 1-10    # Autonomous implementation of issues 1-10
 ```
 
 See `.claude/commands/README.md` for complete command documentation.
+
+### Husky Git Hooks
+
+All projects use husky for pre-commit enforcement:
+- Linting and formatting (lint-staged)
+- Type checking (TypeScript, mypy)
+- **NEVER skip hooks with `--no-verify`**
+
+Installs automatically via `npm install` (using the `prepare` script in package.json).
 
 ## File Organization
 

@@ -295,6 +295,119 @@ make ci
 5. Check commit message format
 6. Look for security issues
 
+## Specialized Sub-Agents
+
+This repository includes specialized sub-agents in `.claude/agents/` that provide expert guidance:
+
+### `/architect` - Full-Stack Architecture Expert
+
+Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full-stack expertise:
+- Analyzes codebase to understand existing patterns
+- Proposes 2-3 architectural approaches with detailed trade-offs
+- Provides specific implementation guidance with code examples
+- **Frontend**: Next.js, React, Server Components, TypeScript
+- **Backend**: Node.js, Express, Fastify, API design
+- **APIs**: REST, JSON:API 1.1, OpenAPI 3.1, GraphQL, Server Actions
+- **Database**: PostgreSQL, PostgREST, Prisma, pgvector
+- **AI/ML**: LLM integration (OpenAI/Anthropic), embeddings, RAG, function calling
+- **Standards**: HTTP best practices, API versioning, security patterns
+- Enforces DRY, KISS, YAGNI principles while meeting production requirements
+- Works in own context window (doesn't consume main conversation)
+
+**Use when**: Designing new features, making technology decisions, API architecture, LLM integration, database design, optimizing architecture
+
+### `/refactor` - DRY/YAGNI/KISS Refactoring Expert
+
+Launches a specialized sub-agent (`refactor-expert`) focused on ruthless code simplification:
+- Identifies all DRY, KISS, YAGNI violations with specific file:line references
+- Enforces HARD LIMITS: 20 lines/function, 250 lines/file, 3 levels nesting
+- Removes dead code, commented code, unused abstractions
+- Extracts repeated logic (only after 3+ occurrences)
+- Provides before/after examples with measurable improvement metrics
+- Works in own context window (doesn't consume main conversation)
+
+**Use when**: Code review reveals complexity, proactive maintenance, post-feature cleanup, eliminating technical debt
+
+## Custom Workflow Commands
+
+This repository includes custom slash commands in `.claude/commands/` for feature development:
+
+### Planning and Breakdown
+
+1. **`/plan-chat`** - Interactive planning session (5-20 min)
+   - Collaborative discussion of approach and architecture
+   - Outputs: `.plan/current-plan.md`
+
+2. **`/plan-breakdown`** - Autonomous story breakdown
+   - Breaks epic into individually deliverable stories
+   - Outputs: `.plan/story-NNN.md`, `.plan/dependency-map.md`
+   - Includes testing requirements, acceptance criteria, dependencies
+
+3. **`/plan-create`** - Convert plans to GitHub issues
+   - Creates GitHub issues via `gh` CLI
+   - Outputs: `.plan/issue-mapping.md` (story → issue mapping)
+
+### Implementation
+
+4. **`/work <issue_number>`** - Implement single issue
+   - Fetches issue, creates branch, implements with tests, creates PR
+   - Respects husky hooks (never skips with --no-verify)
+   - Returns PR URL
+
+5. **`/autocommit <issue_numbers>`** - Autonomous multi-issue workflow
+   - Takes issue numbers (e.g., `4-7` or `4 5 6 7`)
+   - Determines dependency order (DAG)
+   - For each issue, spawns sub-agents for:
+     - Work (implement + create PR)
+     - Code review (thorough review)
+     - Feedback (address review comments)
+   - Iterates until approved (max 3 attempts)
+   - Auto-merges approved PRs
+   - **Context management**: Each sub-agent gets fresh context window (can use 80-90%), main thread stays minimal
+   - Can run autonomously for hours
+
+### Typical Workflow
+
+```bash
+/plan-chat                # Interactive planning
+/plan-breakdown           # Break into stories
+/plan-create              # Create GitHub issues
+/autocommit 1-10          # Autonomous implementation
+```
+
+### UI Development and Verification
+
+When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to verify work before declaring completion:
+
+**Requirements**:
+- All screenshots must be 600x800 pixels (configured in `playwright.config.ts`)
+- Always use headless mode for verification (default setting)
+- Verify UI in browser before marking task complete
+- Store verification screenshots in `screenshots/` directory (committed to repo)
+
+**Workflow**:
+1. Implement UI changes
+2. Use Playwright MCP to verify in headless mode:
+   ```
+   Use Playwright in headless mode to navigate to localhost:3000 and take a screenshot
+   ```
+3. Review screenshot for correctness
+4. Only mark task complete after verification passes
+5. Include screenshots in PR for review
+
+**Example verification commands**:
+```
+Use Playwright to verify the login page renders correctly at localhost:3000/login
+Use Playwright to test the dark mode toggle on the settings page
+Use Playwright to capture the mobile viewport of the dashboard
+```
+
+**Benefits**:
+- Catch UI regressions before committing
+- Small screenshots (600x800) save repo space
+- Headless mode enables fast, automated verification
+- Screenshots provide visual documentation in PRs
+
 ## Reference Files
 
 - `CLAUDE.md`: Complete guide for Claude Code (most comprehensive)
