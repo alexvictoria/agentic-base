@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   iptables \
   jq \
   less \
+  make \
   man-db \
   nano \
   procps \

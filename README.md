@@ -64,12 +64,51 @@ docker context use colima
 devcontainer up --workspace-folder .
 # OR use VS Code "Reopen in Container"
 
-# 3. Setup project
-make setup          # Install dependencies
+# 3. Setup MCP (Playwright browser automation)
+.devcontainer/setup-playwright-mcp.sh
+claude mcp list  # Verify installation
+
+# 4. Setup project
+make setup          # Install dependencies (npm ci)
+make build          # Build TypeScript code
 make lint           # Run linters
 make test           # Run tests (100% coverage required)
 make ci             # Run full CI pipeline locally
+
+# Alternative: Use npm directly
+npm ci              # Install dependencies
+npm run build       # Build TypeScript code
+npm run lint        # Run linters
+npm test            # Run tests
+npm run ci          # Run full CI pipeline
 ```
+
+### Build System
+
+This repository uses **npm as the primary build system**, with **Makefile providing generic wrapper commands** for convenience. All make targets delegate to npm scripts in `package.json`.
+
+Run `make help` to see all available targets.
+
+## Network Isolation
+
+The devcontainer runs with **strict iptables firewall rules** that:
+- Block all outbound traffic by default
+- Allow only specific domains via ipset (GitHub, npm registry, Anthropic API, VS Code marketplace, etc.)
+- Allow HTTP (port 80) and HTTPS (port 443) for Playwright browser automation
+- Run on container start via `init-firewall.sh` (requires NET_ADMIN and NET_RAW capabilities)
+
+**Important**: When adding new external dependencies or APIs, you must update `init-firewall.sh` to include the domain in the allowed list.
+
+**Playwright Exception**: HTTP/HTTPS traffic is allowed for browser automation and testing via Playwright MCP. While this relaxes the firewall for web traffic, other protocols (FTP, SMTP, etc.) remain blocked.
+
+## Specialized Sub-Agents
+
+AI-powered experts in `.claude/agents/`:
+
+- **`/architect`**: Full-stack architecture guidance (Next.js, APIs, databases, LLM integration)
+- **`/refactor`**: Ruthless code simplification (enforces DRY, KISS, YAGNI hard limits)
+
+These sub-agents work in their own context windows for deep analysis without consuming your main conversation.
 
 ## Development Workflow
 
@@ -97,13 +136,56 @@ All projects use husky for pre-commit enforcement:
 
 Installs automatically via `npm install` (using the `prepare` script in package.json).
 
+## Next.js/Node.js Architecture Standards
+
+For Next.js projects, follow these architectural guidelines:
+
+**Next.js Best Practices:**
+- Use **App Router** (`app/`) as default
+- **Server Components First**: Only add `'use client'` when needed (interactivity, hooks, browser APIs)
+- Use **Server Actions** for mutations over API routes
+- Implement proper loading states (`loading.tsx`) and error boundaries (`error.tsx`)
+- Leverage Next.js optimizations: `<Image>`, `<Link>`, `<Font>`
+
+**TypeScript:**
+- Enable `strict: true` in `tsconfig.json`
+- No `any` types without explicit justification
+- Use proper type inference; avoid unnecessary annotations
+- Define types in `src/types/` for shared interfaces
+
+**Code Organization:**
+```
+app/                    # Next.js App Router
+├── (routes)/           # Route groups
+├── _components/        # Private components (not routes)
+└── layout.tsx
+
+src/
+├── components/         # Shared UI components
+├── lib/                # Utilities, configs
+├── hooks/              # Custom hooks
+├── types/              # TypeScript types
+└── actions/            # Server Actions
+```
+
+## Security
+
+- **Never commit secrets** (API keys, tokens)
+- Store in `.env` (gitignored) with `.env.example` for placeholders
+- Commit lockfiles for reproducibility
+- Network isolation via firewall enforces external dependency allowlist
+- Run dependency scanning (`npm audit`, `pip-audit`) in CI
+
 ## File Organization
 
 ```
 .devcontainer/      # Docker environment with network isolation
-.claude/commands/   # Custom slash commands for workflows
+.claude/
+├── agents/         # Specialized sub-agent definitions
+└── commands/       # Custom slash commands for workflows
 scripts/            # CLI helpers for local and CI usage
 tests/              # Test files mirroring runtime code paths
 AGENTS.md           # Detailed agent personas and standards
-CLAUDE.md           # Complete development guide for Claude Code
+CLAUDE.md           # Complete development guide for Claude Code (most comprehensive)
+GEMINI.md           # Repository guidelines for Google Gemini CLI
 ```

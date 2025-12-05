@@ -234,6 +234,12 @@ Ask yourself:
 - Playwright MCP for browser automation
 - Network isolation via iptables
 
+### Build System
+
+This repository uses **npm as the primary build system**, with **Makefile providing generic wrapper commands** for convenience. All make targets delegate to npm scripts defined in package.json.
+
+Run `make help` to see all available targets.
+
 ### Setup Commands
 ```bash
 # Start Colima (macOS)

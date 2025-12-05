@@ -61,6 +61,8 @@ claude mcp list
 
 ## Build and Test Commands
 
+This repository uses **npm as the primary build system**, with **Makefile providing generic wrapper commands** for convenience. All make targets delegate to npm scripts defined in package.json.
+
 Standard commands for this repository:
 
 - `make setup` or `npm ci` - Install dependencies
@@ -68,6 +70,8 @@ Standard commands for this repository:
 - `make format` or `npm run format` - Run Prettier (JS/TS) and Black (Python)
 - `make test` or `npm test` - Run test suite with 100% coverage requirement
 - `make ci` - Mirror CI pipeline locally
+
+Run `make help` to see all available targets.
 
 ## Code Quality Standards
 

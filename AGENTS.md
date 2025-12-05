@@ -149,6 +149,9 @@ claude mcp list
 ```
 
 ## Build, Test, and Development Commands
+
+This repository uses **npm as the primary build system**, with **Makefile providing generic wrapper commands** for convenience. All make targets delegate to npm scripts defined in package.json.
+
 - Devcontainer workflow (brew-installed): ensure Colima is running (`colima start --cpu 4 --memory 8 --vm-type vz`), set Docker context to Colima (`docker context use colima`), then `devcontainer up --workspace-folder .` or use VS Code "Reopen in Container".
 - Node 24 is the default runtime; add an `.nvmrc` with `24` and install via `make setup` or `npm ci`. Use `pnpm`/`yarn` only if standardized across the repo.
 - Provide wrapper targets in `Makefile` and `package.json` scripts:
@@ -156,6 +159,8 @@ claude mcp list
   - `make lint` / `npm run lint` for ESLint (JS/TS) and Ruff (Python helpers); `make format` / `npm run format` for Prettier and Black.
   - `make test` / `npm test` runs unit/integration suites; `make ci` mirrors the CI pipeline.
 - If services are required, expose a single entry like `docker compose up dev` and call it from `make dev`.
+
+Run `make help` to see all available targets.
 
 ## Coding Style & Naming Conventions
 - Default to 2-space indentation, 100–120 char lines, and trailing newline; avoid tabs unless required by language.
@@ -273,6 +278,39 @@ This repository includes custom slash commands in `.claude/commands/` for featur
 /plan-create              # Create GitHub issues
 /autocommit 1-10          # Autonomous implementation
 ```
+
+### UI Development and Verification
+
+When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to verify work before declaring completion:
+
+**Requirements**:
+- All screenshots must be 600x800 pixels (configured in `playwright.config.ts`)
+- Always use headless mode for verification (default setting)
+- Verify UI in browser before marking task complete
+- Store verification screenshots in `screenshots/` directory (committed to repo)
+
+**Workflow**:
+1. Implement UI changes
+2. Use Playwright MCP to verify in headless mode:
+   ```
+   Use Playwright in headless mode to navigate to localhost:3000 and take a screenshot
+   ```
+3. Review screenshot for correctness
+4. Only mark task complete after verification passes
+5. Include screenshots in PR for review
+
+**Example verification commands**:
+```
+Use Playwright to verify the login page renders correctly at localhost:3000/login
+Use Playwright to test the dark mode toggle on the settings page
+Use Playwright to capture the mobile viewport of the dashboard
+```
+
+**Benefits**:
+- Catch UI regressions before committing
+- Small screenshots (600x800) save repo space
+- Headless mode enables fast, automated verification
+- Screenshots provide visual documentation in PRs
 
 ## Security & Configuration
 - Never commit secrets; store provider keys in local `.env` and add `.env.example` with placeholders. Ensure `.env` is gitignored.

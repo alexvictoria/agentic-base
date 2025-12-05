@@ -106,7 +106,16 @@ copy_devcontainer() {
     copy_item "$SCRIPT_DIR/.devcontainer"
 }
 
-# Copy config files (not package.json)
+# Copy npm/node files
+copy_npm() {
+    echo -e "${YELLOW}Copying npm/node files...${NC}"
+    copy_item "$SCRIPT_DIR/package.json"
+    copy_item "$SCRIPT_DIR/package-lock.json"
+    copy_item "$SCRIPT_DIR/tsconfig.json"
+    copy_item "$SCRIPT_DIR/Makefile"
+}
+
+# Copy config files
 copy_config() {
     echo -e "${YELLOW}Copying config files...${NC}"
     copy_item "$SCRIPT_DIR/.gitignore"
@@ -129,6 +138,7 @@ case $MODE in
     all)
         copy_agents
         copy_devcontainer
+        copy_npm
         copy_config
         ;;
 esac

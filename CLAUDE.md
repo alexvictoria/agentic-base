@@ -82,13 +82,46 @@ The devcontainer is configured to support the **Playwright MCP server** for brow
 
 ## Build and Test Commands
 
-Since there are no Makefile or package.json files in the root yet, follow this pattern when adding them:
+This repository uses **npm as the primary build system**, with **Makefile providing generic wrapper commands** for convenience. All make targets delegate to npm scripts defined in package.json.
+
+### Standard Commands
+
+You can use either make or npm directly:
 
 - `make setup` or `npm ci` → Install dependencies
-- `make lint` or `npm run lint` → Run ESLint (JS/TS) and Ruff (Python)
-- `make format` or `npm run format` → Run Prettier (JS/TS) and Black (Python)
+- `make build` or `npm run build` → Build TypeScript code
+- `make lint` or `npm run lint` → Run ESLint
+- `make format` or `npm run format` → Run Prettier
 - `make test` or `npm test` → Run test suite with 100% coverage requirement
-- `make ci` → Mirror CI pipeline locally
+- `make ci` or `npm run ci` → Mirror CI pipeline locally (lint + format-check + test)
+- `make clean` or `npm run clean` → Remove generated files
+
+### All Available Targets
+
+Run `make help` to see all available targets:
+
+```
+make help          - Show all available targets
+make setup         - Install dependencies (npm ci)
+make build         - Build TypeScript code
+make build-watch   - Build TypeScript code in watch mode
+make lint          - Run ESLint
+make lint-fix      - Run ESLint with --fix
+make format        - Format code with Prettier
+make format-check  - Check code formatting
+make test          - Run tests with coverage
+make test-watch    - Run tests in watch mode
+make ci            - Run full CI pipeline
+make clean         - Remove node_modules and coverage
+```
+
+### Devcontainer Management
+
+```
+make devcontainer-build  - Build devcontainer
+make devcontainer-up     - Start devcontainer
+make devcontainer-bash   - Open bash in devcontainer
+```
 
 ## Code Quality Standards
 
@@ -265,7 +298,7 @@ Use Playwright to capture the mobile viewport of the dashboard
 ```
 .devcontainer/           # Devcontainer configuration
 ├── devcontainer.json    # VS Code devcontainer settings
-├── Dockerfile           # Node 24 + Python + Claude Code CLI
+├── Dockerfile           # Node 24 + Python + make + Claude Code CLI
 └── init-firewall.sh     # Network isolation (iptables + ipset)
 
 .claude/
@@ -290,6 +323,16 @@ Use Playwright to capture the mobile viewport of the dashboard
 ├── story-NNN.md         # Individual story specs
 ├── dependency-map.md    # Dependency graph
 └── issue-mapping.md     # Story → GitHub issue mapping
+
+# Root configuration files
+Makefile                 # Generic build commands wrapping npm scripts
+package.json             # npm scripts and dependencies (primary build system)
+package-lock.json        # Locked dependency versions
+tsconfig.json            # TypeScript configuration
+.gitignore               # Git ignore patterns
+.editorconfig            # Editor configuration
+.prettierrc              # Prettier configuration
+.eslintrc.json           # ESLint configuration
 ```
 
 ## Architecture Principles
