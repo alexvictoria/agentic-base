@@ -5,7 +5,14 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nchore: add Claude Code XDG config mount and macOS Keychain workaround\n\n- Mount ~/.config/claude for XDG-compliant Claude Code credential storage\n- Add macOS Keychain credential extraction in setup script\n- Create ~/.gemini directory for Gemini CLI\n- Provide multiple authentication options for devcontainer users\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(docker context:*)",
+      "Bash(colima status:*)",
+      "Bash(test:*)",
+      "Bash(make:*)",
+      "WebSearch",
+      "Bash(docker build:*)",
+      "Bash(docker rmi:*)"
     ],
     "deny": [],
     "ask": []

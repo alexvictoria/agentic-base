@@ -47,4 +47,4 @@ jobs:
             -f .devcontainer/Dockerfile \
             --build-arg TZ=${TZ:-America/Los_Angeles} \
             -t agentic-base-devcontainer \
-            .
+            .devcontainer
