@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-This is a base repository providing shared devcontainer configuration and automation scaffolding for AI agent workflows (Claude and Codex). It standardizes development environments with strict network isolation and quality gates.
+This is a base repository providing shared devcontainer configuration and automation scaffolding for AI agent workflows (Claude, Codex, and Gemini). It standardizes development environments with strict network isolation and quality gates.
 
 ## Development Environment
 
@@ -25,7 +25,7 @@ The primary development environment is a Docker-based devcontainer with network 
    - User: `node` (non-root)
    - Node version: 24 (check for `.nvmrc`)
    - Python 3 available for helper scripts
-   - Claude Code CLI pre-installed globally
+   - Claude Code, Codex, and Gemini CLIs pre-installed globally
    - Default shell: zsh with powerline10k theme
 
 ### Network Isolation
@@ -298,7 +298,7 @@ Use Playwright to capture the mobile viewport of the dashboard
 ```
 .devcontainer/           # Devcontainer configuration
 ├── devcontainer.json    # VS Code devcontainer settings
-├── Dockerfile           # Node 24 + Python + make + Claude Code CLI
+├── Dockerfile           # Node 24 + Python + make + Claude/Codex/Gemini CLIs
 └── init-firewall.sh     # Network isolation (iptables + ipset)
 
 .claude/

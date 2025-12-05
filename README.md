@@ -1,6 +1,6 @@
 # Base Agent Standards
 
-This repo provides the shared devcontainer and automation scaffolding for Codex and Claude workflows. The devcontainer ships with Node 24 plus codex-cli and the Claude Code CLI preinstalled for consistent agent behavior.
+This repo provides the shared devcontainer and automation scaffolding for Claude, Codex, and Gemini workflows. The devcontainer ships with Node 24 plus all three CLIs (Claude Code, Codex, and Gemini) preinstalled for consistent agent behavior.
 
 ## Code Quality Principles
 

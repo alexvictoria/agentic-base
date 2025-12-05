@@ -36,7 +36,8 @@
       "Bash(chmod:*)",
       "Bash(find:*)",
       "Bash(ls:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []

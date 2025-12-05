@@ -5,6 +5,7 @@ ENV TZ="$TZ"
 
 ARG CLAUDE_CODE_VERSION=latest
 ARG CODEX_CLI_VERSION=latest
+ARG GEMINI_CLI_VERSION=latest
 ARG GIT_DELTA_VERSION=0.18.2
 ARG ZSH_IN_DOCKER_VERSION=1.2.0
 ARG USERNAME=node
@@ -111,10 +112,11 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
   -x
 
-# Install Codex and Claude Code CLIs
+# Install Codex, Claude Code, and Gemini CLIs
 RUN npm install -g \
   @openai/codex@${CODEX_CLI_VERSION} \
-  @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+  @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION} \
+  @google/gemini-cli@${GEMINI_CLI_VERSION}
 
 # Convenience alias for Claude (add to both bash and zsh)
 RUN echo "alias claude-yolo='claude --dangerously-skip-permissions'" >> /home/${USERNAME}/.bashrc && \
