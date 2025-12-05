@@ -54,6 +54,28 @@ This directory contains specialized agent definitions that can be launched as su
 
 ---
 
+### Agent Sync Specialist (`agent-sync-specialist.md`)
+
+**Purpose**: Documentation synchronization expert for keeping all project documentation consistent
+
+**Expertise**:
+- Synchronizing directives across CLAUDE.md, AGENTS.md, GEMINI.md, README.md, .cursorrules
+- Identifying source of truth among documentation files
+- Detecting inconsistencies and contradictions
+- Preserving each file's unique purpose and audience
+- Creating missing documentation files when requested
+
+**When to Use**:
+- After updating any documentation file
+- When adding new development standards or workflows
+- To verify documentation integrity
+- Before starting a new feature to ensure latest guidelines
+- After major refactoring or architectural changes
+
+**Launch via**: `/sync-agents` command
+
+---
+
 ## How Agents Work
 
 ### Agent Invocation
@@ -203,12 +225,14 @@ The main conversation or `/work` command handles actual implementation.
 ├── agents/              # Specialized agent definitions (THIS DIRECTORY)
 │   ├── README.md        # This file
 │   ├── fullstack-architect.md     # Node.js/Next.js architecture expert
-│   └── refactor-expert.md      # DRY/YAGNI/KISS refactoring expert
+│   ├── refactor-expert.md         # DRY/YAGNI/KISS refactoring expert
+│   └── agent-sync-specialist.md   # Documentation synchronization expert
 │
 └── commands/            # Slash commands that launch agents
     ├── README.md
     ├── architect.md     # Launches architect agent
     ├── refactor.md      # Launches refactor agent
+    ├── sync-agents.md   # Launches agent-sync-specialist
     ├── work.md          # Implementation workflow
     ├── plan-chat.md     # Planning session
     ├── plan-breakdown.md

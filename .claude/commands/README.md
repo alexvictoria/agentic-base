@@ -72,6 +72,18 @@ Launches a specialized sub-agent (defined in [.claude/agents/refactor-expert.md]
 - Works in isolated context window (doesn't consume main conversation)
 - **Use when**: Code review reveals complexity, proactive maintenance, post-feature cleanup
 
+### `/sync-agents`
+**Documentation synchronization specialist** 📄
+
+Launches a specialized sub-agent (defined in [.claude/agents/agent-sync-specialist.md](../agents/agent-sync-specialist.md)) for keeping project documentation consistent.
+
+- Synchronizes directives across CLAUDE.md, AGENTS.md, GEMINI.md, README.md, .cursorrules
+- Identifies source of truth and detects inconsistencies
+- Preserves each file's unique purpose and audience
+- Use `--create-missing` flag to generate missing documentation files
+- Works in isolated context window (doesn't consume main conversation)
+- **Use when**: After updating documentation, adding new standards, or verifying documentation integrity
+
 ## Typical Workflow
 
 ### Feature Development Workflow
