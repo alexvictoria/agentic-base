@@ -113,6 +113,7 @@ copy_npm() {
     copy_item "$SCRIPT_DIR/package-lock.json"
     copy_item "$SCRIPT_DIR/tsconfig.json"
     copy_item "$SCRIPT_DIR/Makefile"
+    copy_item "$SCRIPT_DIR/src"
 }
 
 # Copy config files
