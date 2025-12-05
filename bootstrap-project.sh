@@ -122,6 +122,8 @@ copy_config() {
     copy_item "$SCRIPT_DIR/.editorconfig"
     copy_item "$SCRIPT_DIR/.prettierrc"
     copy_item "$SCRIPT_DIR/.eslintrc.json"
+    copy_item "$SCRIPT_DIR/.husky"
+    copy_item "$SCRIPT_DIR/.dockerignore"
     copy_item "$SCRIPT_DIR/.tool-versions"
     copy_item "$SCRIPT_DIR/README.md"
     copy_item "$SCRIPT_DIR/.github"
@@ -145,3 +147,13 @@ esac
 
 echo ""
 echo -e "${GREEN}✓ Done!${NC}"
+echo ""
+
+# Show next steps based on mode
+if [ "$MODE" = "all" ] || [ "$MODE" = "devcontainer" ]; then
+    echo -e "${BLUE}Next steps:${NC}"
+    echo "  1. cd $TARGET_DIR"
+    echo "  2. make setup        # Install dependencies and set up git hooks"
+    echo "  3. make ci           # Verify everything works"
+    echo ""
+fi

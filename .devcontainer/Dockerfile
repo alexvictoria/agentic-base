@@ -3,14 +3,18 @@ FROM node:24-bookworm
 ARG TZ
 ENV TZ="$TZ"
 
-ARG CLAUDE_CODE_VERSION=latest
-ARG CODEX_CLI_VERSION=latest
-ARG GEMINI_CLI_VERSION=latest
+# Pin CLI versions for reproducibility and better Docker layer caching
+# Update these periodically (monthly/quarterly) after testing
+# To check latest: npm view @package-name version
+ARG CLAUDE_CODE_VERSION=2.0.59
+ARG CODEX_CLI_VERSION=0.65.0
+ARG GEMINI_CLI_VERSION=0.19.2
 ARG GIT_DELTA_VERSION=0.18.2
 ARG ZSH_IN_DOCKER_VERSION=1.2.0
 ARG USERNAME=node
 
-# Install base tools, networking utilities, and Python for data helpers
+# Install base tools, networking utilities, Python, and Playwright dependencies
+# Combine all apt-get installs to reduce layer count and avoid duplicate updates
 RUN apt-get update && apt-get install -y --no-install-recommends \
   aggregate \
   curl \
@@ -36,11 +40,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   vim \
   wget \
   zsh \
-  && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install Playwright system dependencies for browser automation
-# These are required for Playwright to run Chromium, Firefox, and WebKit
-RUN apt-get update && apt-get install -y --no-install-recommends \
   libnss3 \
   libnspr4 \
   libatk1.0-0 \
@@ -112,8 +111,10 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
   -x
 
-# Install Codex, Claude Code, and Gemini CLIs
-RUN npm install -g \
+# Install Codex, Claude Code, and Gemini CLIs with BuildKit cache mount
+# This caches the npm cache directory across builds for much faster installs
+RUN --mount=type=cache,target=/home/${USERNAME}/.npm,uid=1000,gid=1000 \
+  npm install -g \
   @openai/codex@${CODEX_CLI_VERSION} \
   @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION} \
   @google/gemini-cli@${GEMINI_CLI_VERSION}

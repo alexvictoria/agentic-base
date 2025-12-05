@@ -28,9 +28,45 @@ The primary development environment is a Docker-based devcontainer with network 
    - Claude Code, Codex, and Gemini CLIs pre-installed globally
    - Default shell: zsh with powerline10k theme
 
+### BuildKit Optimization
+
+The devcontainer uses **Docker BuildKit** for faster builds with advanced caching:
+
+**Setup (one-time)**:
+
+```bash
+# Install buildx plugin for colima
+mkdir -p ~/.docker/cli-plugins
+BUILDX_VERSION=0.30.1
+curl -sSL "https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.darwin-arm64" \
+  -o ~/.docker/cli-plugins/docker-buildx
+chmod +x ~/.docker/cli-plugins/docker-buildx
+```
+
+**Features enabled**:
+
+- **Cache mounts**: npm cache persists across builds (~50s → 0.5s on rebuilds)
+- **Pinned CLI versions**: Prevents unnecessary re-downloads (versions in `devcontainer.json`)
+- **Layer caching**: Reuses unchanged layers automatically
+- **Inline cache**: `BUILDKIT_INLINE_CACHE=1` for better cache reuse
+
+**Build performance**:
+
+- First build: ~3-4 minutes (downloads all dependencies)
+- Rebuild with cache: ~5-10 seconds (only changed layers)
+- CLI update: ~1 minute (only reinstalls changed packages)
+
+**Verification**:
+
+```bash
+docker buildx version  # Should show v0.30.1+
+docker buildx ls       # Should show colima builder active
+```
+
 ### Network Isolation
 
 The devcontainer runs with **strict iptables firewall rules** that:
+
 - Block all outbound traffic by default
 - Allow only specific domains via ipset (GitHub, npm registry, Anthropic API, VS Code marketplace, etc.)
 - Allow HTTP (port 80) and HTTPS (port 443) for Playwright browser automation
@@ -50,21 +86,26 @@ This devcontainer includes support for **MCP (Model Context Protocol)** servers,
 The devcontainer is configured to support the **Playwright MCP server** for browser automation:
 
 **Features**:
+
 - Browser automation (Chromium, Firefox, WebKit)
 - Web scraping and testing
 - Accessibility snapshot analysis
 - Real-time web interaction through Claude
 
 **Setup**:
+
 1. After starting the devcontainer, run the setup script:
+
    ```bash
    .devcontainer/setup-playwright-mcp.sh
    ```
 
 2. Verify installation:
+
    ```bash
    claude mcp list
    ```
+
    You should see `playwright` in the list.
 
 3. Use in Claude Code sessions:
@@ -76,25 +117,37 @@ The devcontainer is configured to support the **Playwright MCP server** for brow
    ```
 
 **System Dependencies**:
+
 - All required Playwright browser dependencies are pre-installed in the Docker image
 - Firewall allows HTTP/HTTPS for browser access
 - Uses `@playwright/mcp` (official Microsoft version)
 
 ## Build and Test Commands
 
-This repository uses **npm as the primary build system**, with **Makefile providing generic wrapper commands** for convenience. All make targets delegate to npm scripts defined in package.json.
+This repository uses **Makefile as the primary interface** for all development tasks. Makefile targets delegate to npm scripts, which in turn run the actual build tools. This provides a consistent interface across host development, devcontainer development, and GitHub Actions CI.
 
 ### Standard Commands
 
-You can use either make or npm directly:
+**Use Makefile commands** (preferred for consistency):
 
-- `make setup` or `npm ci` → Install dependencies
-- `make build` or `npm run build` → Build TypeScript code
-- `make lint` or `npm run lint` → Run ESLint
-- `make format` or `npm run format` → Run Prettier
-- `make test` or `npm test` → Run test suite with 100% coverage requirement
-- `make ci` or `npm run ci` → Mirror CI pipeline locally (lint + format-check + test)
-- `make clean` or `npm run clean` → Remove generated files
+- `make setup` → Install dependencies and set up git hooks
+- `make build` → Build TypeScript code
+- `make lint` → Run ESLint
+- `make lint-fix` → Run ESLint with --fix
+- `make format` → Format code with Prettier
+- `make format-check` → Check code formatting
+- `make test` → Run test suite with 100% coverage requirement
+- `make ci` → Run full CI pipeline (lint + format-check + test + build)
+- `make clean` → Remove generated files
+
+**npm scripts** are also available but Makefile is preferred for uniformity:
+
+- `npm ci` = `make setup`
+- `npm run build` = `make build`
+- `npm run lint` = `make lint`
+- `npm run format` = `make format`
+- `npm test` = `make test`
+- `npm run ci` = `make ci`
 
 ### All Available Targets
 
@@ -102,7 +155,7 @@ Run `make help` to see all available targets:
 
 ```
 make help          - Show all available targets
-make setup         - Install dependencies (npm ci)
+make setup         - Install dependencies and set up git hooks
 make build         - Build TypeScript code
 make build-watch   - Build TypeScript code in watch mode
 make lint          - Run ESLint
@@ -111,7 +164,7 @@ make format        - Format code with Prettier
 make format-check  - Check code formatting
 make test          - Run tests with coverage
 make test-watch    - Run tests in watch mode
-make ci            - Run full CI pipeline
+make ci            - Run full CI pipeline (lint + format-check + test + build)
 make clean         - Remove node_modules and coverage
 ```
 
@@ -132,7 +185,7 @@ make devcontainer-bash     - Open bash in devcontainer
 - **100% code coverage** required for all commits, pushes, and PR merges
 - Block any coverage regression unless explicitly documented
 - Test files: `*.test.ts` / `*.test.js` (Node) or `test_*.py` (Python)
-- Run full test suite before any commit: `make test` or `npm test`
+- Run full test suite before any commit: `make test`
 
 ### Code Style
 
@@ -158,13 +211,23 @@ make devcontainer-bash     - Open bash in devcontainer
 
 ### Husky Git Hooks
 
-All projects should use husky for pre-commit enforcement:
-- Linting and formatting (lint-staged)
-- Type checking (TypeScript, mypy)
-- Unit tests (optional in pre-push)
-- **NEVER** skip hooks with `--no-verify`
+This repository uses Husky git hooks for quality enforcement:
 
-Husky installs automatically via `npm install` (using the `prepare` script in package.json).
+**Pre-commit hook** (`.husky/pre-commit`):
+
+- Runs `lint-staged` on staged files only
+- Auto-fixes with ESLint and Prettier
+- Fast, focused checks on changed files
+
+**Pre-push hook** (`.husky/pre-push`):
+
+- Runs full `make ci` pipeline
+- Enforces 100% test coverage
+- Catches all issues before pushing
+
+**Setup**: Hooks install automatically when you run `make setup` (via the `prepare` npm script).
+
+**NEVER** skip hooks with `--no-verify` - they prevent broken code from entering the repository.
 
 ## Specialized Sub-Agents
 
@@ -173,6 +236,7 @@ This repository includes specialized sub-agents in `.claude/agents/` that provid
 ### `/architect` - Full-Stack Architecture Expert
 
 Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full-stack expertise to provide architectural guidance:
+
 - Analyzes your codebase to understand existing patterns
 - Proposes 2-3 architectural approaches with detailed trade-offs
 - Provides specific implementation guidance with code examples
@@ -190,6 +254,7 @@ Launches a specialized sub-agent (`fullstack-architect`) with comprehensive full
 ### `/refactor` - DRY/YAGNI/KISS Refactoring Expert
 
 Launches a specialized sub-agent (`refactor-expert`) focused on ruthless code simplification:
+
 - Identifies all DRY, KISS, YAGNI violations with specific file:line references
 - Enforces HARD LIMITS: 20 lines/function, 250 lines/file, 3 levels nesting
 - Removes dead code, commented code, unused abstractions
@@ -202,6 +267,7 @@ Launches a specialized sub-agent (`refactor-expert`) focused on ruthless code si
 ### How Sub-Agents Work
 
 Sub-agents work autonomously with their own context windows:
+
 1. You invoke slash command (e.g., `/architect`)
 2. Command reads agent definition from `.claude/agents/`
 3. Command prompts you for your specific question or code to analyze
@@ -210,6 +276,7 @@ Sub-agents work autonomously with their own context windows:
 6. Main conversation stays clean and focused
 
 **Benefits**:
+
 - Context isolation: Sub-agents use 80-90% of their context for deep analysis
 - Specialized expertise: Each agent has domain-specific knowledge
 - Parallel work: Multiple sub-agents can work simultaneously
@@ -267,12 +334,14 @@ This repository includes custom slash commands in `.claude/commands/` for featur
 When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to verify work before declaring completion:
 
 **Requirements**:
+
 - All screenshots must be 600x800 pixels (configured in `playwright.config.ts`)
 - Always use headless mode for verification (default setting)
 - Verify UI in browser before marking task complete
 - Store verification screenshots in `screenshots/` directory (committed to repo)
 
 **Workflow**:
+
 1. Implement UI changes
 2. Use Playwright MCP to verify in headless mode:
    ```
@@ -283,6 +352,7 @@ When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to veri
 5. Include screenshots in PR for review
 
 **Example verification commands**:
+
 ```
 Use Playwright to verify the login page renders correctly at localhost:3000/login
 Use Playwright to test the dark mode toggle on the settings page
@@ -290,6 +360,7 @@ Use Playwright to capture the mobile viewport of the dashboard
 ```
 
 **Benefits**:
+
 - Catch UI regressions before committing
 - Small screenshots (600x800) save repo space
 - Headless mode enables fast, automated verification
@@ -344,17 +415,20 @@ tsconfig.json            # TypeScript configuration
 All code in this repository must adhere to **DRY, KISS, and YAGNI** principles:
 
 **DRY (Don't Repeat Yourself):**
+
 - Extract repeated logic after 3+ occurrences
 - Prefer duplication over wrong abstractions
 - Use composition to eliminate redundancy
 
 **KISS (Keep It Simple, Stupid):**
+
 - Choose the simplest working solution
 - Max 20 lines per function, 250 lines per file
 - Avoid clever code; prefer explicit and readable
 - Max 3 levels of nesting in conditionals
 
 **YAGNI (You Aren't Gonna Need It):**
+
 - Build only what's needed NOW
 - No speculative features or "future-proofing"
 - Delete unused code immediately (never comment out)
@@ -365,6 +439,7 @@ All code in this repository must adhere to **DRY, KISS, and YAGNI** principles:
 For Node.js and Next.js projects, follow these architectural guidelines:
 
 **Next.js Best Practices:**
+
 - Use **App Router** (`app/`) as default
 - **Server Components First**: Only add `'use client'` when needed (interactivity, hooks, browser APIs)
 - Use **Server Actions** for mutations over API routes
@@ -372,18 +447,21 @@ For Node.js and Next.js projects, follow these architectural guidelines:
 - Leverage Next.js optimizations: `<Image>`, `<Link>`, `<Font>`
 
 **TypeScript:**
+
 - Enable `strict: true` in `tsconfig.json`
 - No `any` types without explicit justification
 - Use proper type inference; avoid unnecessary annotations
 - Define types in `src/types/` for shared interfaces
 
 **Data Fetching:**
+
 - Server Components: Fetch directly in component
 - Client Components: Use SWR or React Query
 - Never fetch in `useEffect` when RSC can handle it
 - Implement caching strategies (revalidate, cache tags)
 
 **Code Organization:**
+
 ```
 app/                    # Next.js App Router
 ├── (routes)/           # Route groups
@@ -401,6 +479,7 @@ src/
 ### Agent-Facing Scripts
 
 Keep scripts in `scripts/` or `automation/agents/`:
+
 - Small, idempotent, well-documented
 - Header comments describing inputs/outputs
 - No provider-specific secrets (use `.env` with `.env.example`)
@@ -408,6 +487,7 @@ Keep scripts in `scripts/` or `automation/agents/`:
 ### Configuration Files
 
 Place at root for agent discoverability:
+
 - `Makefile`, `package.json`, `pyproject.toml`, `.tool-versions`
 - Language/runtime configs should be easily detectable
 

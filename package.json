@@ -22,7 +22,7 @@
     "test": "jest --coverage --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
-    "ci": "npm run lint && npm run format:check && npm run test"
+    "ci": "npm run lint && npm run format:check && npm run test && npm run build"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",

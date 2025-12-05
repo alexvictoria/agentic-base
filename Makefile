@@ -12,7 +12,7 @@
 #   make clean    - Remove generated files
 #   make help     - Show this help message
 
-.PHONY: help setup install build build-watch lint lint-fix format format-check test test-watch test-coverage ci clean devcontainer-build devcontainer-rebuild devcontainer-up devcontainer-reup devcontainer-bash
+.PHONY: help prepare setup install build build-watch lint lint-fix format format-check test test-watch test-coverage ci clean devcontainer-build devcontainer-rebuild devcontainer-up devcontainer-reup devcontainer-bash
 
 # Default target
 .DEFAULT_GOAL := help
@@ -21,8 +21,9 @@
 help:
 	@echo "Available targets:"
 	@echo ""
-	@echo "  setup          - Install dependencies (npm ci)"
+	@echo "  setup          - Install dependencies (npm ci) and set up git hooks"
 	@echo "  install        - Install dependencies (alias for setup)"
+	@echo "  prepare        - Set up git hooks (run automatically by npm)"
 	@echo "  build          - Build TypeScript code"
 	@echo "  build-watch    - Build TypeScript code in watch mode"
 	@echo "  lint           - Run ESLint"
@@ -32,7 +33,7 @@ help:
 	@echo "  test           - Run tests with coverage"
 	@echo "  test-watch     - Run tests in watch mode"
 	@echo "  test-coverage  - Run tests and generate coverage report"
-	@echo "  ci             - Run full CI pipeline (lint + format-check + test)"
+	@echo "  ci             - Run full CI pipeline (lint + format-check + test + build)"
 	@echo "  clean          - Remove node_modules and coverage"
 	@echo ""
 	@echo "  Devcontainer targets:"
@@ -43,12 +44,16 @@ help:
 	@echo "  devcontainer-bash      - Open bash in devcontainer"
 	@echo ""
 
-## setup: Install dependencies
+## setup: Install dependencies and set up git hooks
 setup:
 	npm ci
 
 ## install: Install dependencies (alias for setup)
 install: setup
+
+## prepare: Set up git hooks (husky)
+prepare:
+	npm run prepare
 
 ## build: Build TypeScript code
 build:

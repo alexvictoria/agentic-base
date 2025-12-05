@@ -4,12 +4,13 @@
     "dockerfile": "Dockerfile",
     "args": {
       "TZ": "${localEnv:TZ:America/Los_Angeles}",
-      "CLAUDE_CODE_VERSION": "latest",
-      "CODEX_CLI_VERSION": "latest",
-      "GEMINI_CLI_VERSION": "latest",
+      "CLAUDE_CODE_VERSION": "2.0.59",
+      "CODEX_CLI_VERSION": "0.65.0",
+      "GEMINI_CLI_VERSION": "0.19.2",
       "GIT_DELTA_VERSION": "0.18.2",
       "ZSH_IN_DOCKER_VERSION": "1.2.0"
-    }
+    },
+    "options": ["--build-arg", "BUILDKIT_INLINE_CACHE=1"]
   },
   "runArgs": ["--cap-add=NET_ADMIN", "--cap-add=NET_RAW"],
   "remoteUser": "node",

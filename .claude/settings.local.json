@@ -39,13 +39,22 @@
       "Bash(wc:*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:www.npmjs.com)",
-      "Bash(docker system:*)"
+      "Bash(docker system:*)",
+      "Bash(docker images:*)",
+      "Bash(docker buildx:*)",
+      "Bash(cat:*)",
+      "Bash(colima status:*)",
+      "Bash(colima list:*)",
+      "Bash(docker version:*)",
+      "Bash(docker info:*)",
+      "Bash(DOCKER_BUILDKIT=1 docker build:*)",
+      "Bash(npm view:*)",
+      "Bash(make devcontainer-rebuild:*)",
+      "Bash(make devcontainer-up:*)"
     ],
     "deny": [],
     "ask": []
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "playwright"
-  ]
+  "enabledMcpjsonServers": ["playwright"]
 }
