@@ -230,7 +230,7 @@ Ask yourself:
 ### Devcontainer
 - Node.js 24 LTS (check `.nvmrc`)
 - Python 3 for helper scripts
-- Claude Code CLI pre-installed
+- Claude Code, Codex, and Gemini CLIs pre-installed
 - Playwright MCP for browser automation
 - Network isolation via iptables
 

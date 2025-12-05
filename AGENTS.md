@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-This repo standardizes a base devcontainer and automation hooks for Claude and Codex agents. Keep changes predictable so automated flows remain stable.
+This repo standardizes a base devcontainer and automation hooks for Claude, Codex, and Gemini agents. Keep changes predictable so automated flows remain stable.
 
 ## AI Agent Personas
 

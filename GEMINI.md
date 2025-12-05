@@ -25,7 +25,7 @@ The primary development environment is a Docker-based devcontainer with network 
 - User: `node` (non-root)
 - Node version: 24 (check for `.nvmrc`)
 - Python 3 available for helper scripts
-- Claude Code CLI pre-installed globally
+- Claude Code, Codex, and Gemini CLIs pre-installed globally
 - Default shell: zsh with powerline10k theme
 
 ### Network Isolation
@@ -213,7 +213,7 @@ Place at root for AI assistant discoverability:
 ```
 .devcontainer/           # Devcontainer configuration
 ├── devcontainer.json    # VS Code devcontainer settings
-├── Dockerfile           # Node 24 + Python + Claude Code CLI
+├── Dockerfile           # Node 24 + Python + Claude/Codex/Gemini CLIs
 └── init-firewall.sh     # Network isolation (iptables + ipset)
 
 .claude/

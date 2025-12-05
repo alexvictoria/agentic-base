@@ -176,6 +176,39 @@ src/
 - Network isolation via firewall enforces external dependency allowlist
 - Run dependency scanning (`npm audit`, `pip-audit`) in CI
 
+## UI Development and Verification
+
+When working on UI tasks, **ALWAYS** use Playwright MCP in headless mode to verify work before declaring completion:
+
+**Requirements**:
+- All screenshots must be 600x800 pixels (configured in `playwright.config.ts`)
+- Always use headless mode for verification (default setting)
+- Verify UI in browser before marking task complete
+- Store verification screenshots in `screenshots/` directory (committed to repo)
+
+**Workflow**:
+1. Implement UI changes
+2. Use Playwright MCP to verify in headless mode:
+   ```
+   Use Playwright in headless mode to navigate to localhost:3000 and take a screenshot
+   ```
+3. Review screenshot for correctness
+4. Only mark task complete after verification passes
+5. Include screenshots in PR for review
+
+**Example verification commands**:
+```
+Use Playwright to verify the login page renders correctly at localhost:3000/login
+Use Playwright to test the dark mode toggle on the settings page
+Use Playwright to capture the mobile viewport of the dashboard
+```
+
+**Benefits**:
+- Catch UI regressions before committing
+- Small screenshots (600x800) save repo space
+- Headless mode enables fast, automated verification
+- Screenshots provide visual documentation in PRs
+
 ## File Organization
 
 ```
