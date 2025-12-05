@@ -51,7 +51,8 @@
       "Bash(npm view:*)",
       "Bash(make devcontainer-rebuild:*)",
       "Bash(make devcontainer-up:*)",
-      "Bash(make format:*)"
+      "Bash(make format:*)",
+      "Bash(ignored\" error and make ci cannot complete successfully.\n\nThis ensures bootstrapped projects pass all quality gates immediately.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
