@@ -34,7 +34,9 @@
       "Bash(docker rm:*)",
       "Bash(xargs:*)",
       "Bash(chmod:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)"
     ],
     "deny": [],
     "ask": []
