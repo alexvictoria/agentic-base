@@ -116,15 +116,44 @@ src/
 - Sort alphabetically within groups
 - Remove unused imports (lint-staged enforces)
 
-## Testing - 100% COVERAGE REQUIRED
+## Code Quality Standards - ALWAYS ENFORCE
 
-### Test Files
+### Completion Requirements (Definition of Done)
+
+**CRITICAL**: Before claiming ANY task is complete, you MUST verify all quality gates pass:
+
+1. **Run `make lint`** - All ESLint warnings and errors MUST be fixed
+   - Zero warnings allowed
+   - Zero errors allowed
+   - If lint fails, the task is NOT complete
+
+2. **Run `make test`** - 100% code coverage REQUIRED
+   - All tests must pass
+   - Coverage must be 100% for branches, functions, lines, and statements
+   - If coverage is less than 100%, the task is NOT complete
+
+3. **Run `make format-check`** - All files MUST be properly formatted
+   - Zero formatting violations allowed
+   - Run `make format` to auto-fix if needed
+   - If format-check fails, the task is NOT complete
+
+4. **Run `make build`** - TypeScript compilation MUST succeed
+   - Zero build errors allowed
+   - If build fails, the task is NOT complete
+
+**Shortcut**: Run `make ci` to check all gates at once (lint + format-check + test + build)
+
+**Never** claim completion without verifying these gates. **Never** commit code that fails these checks.
+
+### Testing - 100% COVERAGE REQUIRED
+
+**Test Files**:
 
 - Location: `tests/` mirroring runtime code paths
 - Naming: `*.test.ts` / `*.test.js` (Node) or `test_*.py` (Python)
 - Shared fixtures in `tests/fixtures/`
 
-### Test Requirements
+**Test Requirements**:
 
 - **100% code coverage** - NO EXCEPTIONS
 - Fast and deterministic (no sleeps/waits)
@@ -132,11 +161,11 @@ src/
 - Test behavior, not implementation
 - Mock external dependencies
 
-### Test Stack
+**Test Stack**:
 
 - Unit: Vitest + Testing Library
 - E2E: Playwright
-- Run before every commit: `make test` or `npm test`
+- Run before every commit: `make test`
 
 ## Git Workflow - STRICT
 
@@ -166,11 +195,25 @@ Format: `<type>(<scope>): <description> (#<issue>)`
 - `docs: update API documentation (#789)`
 - `test: add unit tests for auth service (#234)`
 
-### Git Hooks - NEVER SKIP
+### Husky Git Hooks - NEVER SKIP
 
-- Pre-commit: lint-staged (formatting, linting, type-check)
-- Pre-push: tests (optional)
-- **NEVER use `--no-verify`** - hooks exist for a reason
+This repository uses Husky git hooks for quality enforcement:
+
+**Pre-commit hook** (`.husky/pre-commit`):
+
+- Runs `lint-staged` on staged files only
+- Auto-fixes with ESLint and Prettier
+- Fast, focused checks on changed files
+
+**Pre-push hook** (`.husky/pre-push`):
+
+- Runs full `make ci` pipeline
+- Enforces 100% test coverage
+- Catches all issues before pushing
+
+**Setup**: Hooks install automatically when you run `make setup` (via the `prepare` npm script).
+
+**NEVER** skip hooks with `--no-verify` - they prevent broken code from entering the repository.
 
 ### Branch Strategy
 
@@ -261,7 +304,18 @@ Ask yourself:
 
 ### Build System
 
-This repository uses **npm as the primary build system**, with **Makefile providing generic wrapper commands** for convenience. All make targets delegate to npm scripts defined in package.json.
+This repository uses **Makefile as the primary interface** for all development tasks. Makefile targets delegate to npm scripts, which in turn run the actual build tools. This provides a consistent interface across host development, devcontainer development, and GitHub Actions CI.
+
+**Use Makefile commands** (preferred for consistency):
+
+- `make setup` → Install dependencies and set up git hooks
+- `make build` → Build TypeScript code
+- `make lint` → Run ESLint
+- `make format` → Format code with Prettier
+- `make test` → Run test suite with 100% coverage requirement
+- `make ci` → Run full CI pipeline (lint + format-check + test + build)
+
+**npm scripts** are also available but Makefile is preferred for uniformity.
 
 Run `make help` to see all available targets.
 

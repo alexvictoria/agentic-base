@@ -26,7 +26,44 @@ For Next.js projects, we follow modern best practices:
 
 See `AGENTS.md` for complete architectural guidelines and technology stack.
 
-## Network Isolation & MCP
+## Development Environment
+
+### BuildKit Optimization
+
+The devcontainer uses **Docker BuildKit** for faster builds with advanced caching:
+
+**Setup (one-time)**:
+
+```bash
+# Install buildx plugin for colima
+mkdir -p ~/.docker/cli-plugins
+BUILDX_VERSION=0.30.1
+curl -sSL "https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.darwin-arm64" \
+  -o ~/.docker/cli-plugins/docker-buildx
+chmod +x ~/.docker/cli-plugins/docker-buildx
+```
+
+**Features enabled**:
+
+- **Cache mounts**: npm cache persists across builds (~50s → 0.5s on rebuilds)
+- **Pinned CLI versions**: Prevents unnecessary re-downloads (versions in `devcontainer.json`)
+- **Layer caching**: Reuses unchanged layers automatically
+- **Inline cache**: `BUILDKIT_INLINE_CACHE=1` for better cache reuse
+
+**Build performance**:
+
+- First build: ~3-4 minutes (downloads all dependencies)
+- Rebuild with cache: ~5-10 seconds (only changed layers)
+- CLI update: ~1 minute (only reinstalls changed packages)
+
+**Verification**:
+
+```bash
+docker buildx version  # Should show v0.30.1+
+docker buildx ls       # Should show colima builder active
+```
+
+### Network Isolation & MCP
 
 The devcontainer runs with **strict iptables firewall rules** blocking all outbound traffic by default. Only specific domains are allowed via `init-firewall.sh`.
 
@@ -43,16 +80,50 @@ AI-powered experts in `.claude/agents/`:
 - **`/architect`**: Full-stack architecture guidance (Next.js, APIs, databases, LLM integration)
 - **`/refactor`**: Ruthless code simplification (enforces DRY, KISS, YAGNI hard limits)
 
-## Coverage and Quality Gates
+## Code Quality Standards
 
-- Require 100% automated code coverage for every commit, push, and PR merge; block if the suite drops below full coverage.
-- Run the full test suite (`make test` / `npm test`) locally and in CI before shipping; document any deliberate exclusions and rationale in the test config.
-- Keep changes aligned with the guidelines in `AGENTS.md` and the Claude command docs under `.claude/commands/`.
-- **All commits MUST use [Conventional Commits](https://www.conventionalcommits.org/) format**:
-  - Format: `<type>(<scope>): <description> (#<issue>)`
-  - **Always reference GitHub issue number** when available
-  - Types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`, `perf`, `ci`, `build`, `style`
-  - Examples: `feat: add authentication (#42)`, `fix: resolve memory leak (#123)`
+### Completion Requirements (Definition of Done)
+
+**CRITICAL**: Before claiming ANY task is complete, you MUST verify all quality gates pass:
+
+1. **Run `make lint`** - All ESLint warnings and errors MUST be fixed
+   - Zero warnings allowed
+   - Zero errors allowed
+   - If lint fails, the task is NOT complete
+
+2. **Run `make test`** - 100% code coverage REQUIRED
+   - All tests must pass
+   - Coverage must be 100% for branches, functions, lines, and statements
+   - If coverage is less than 100%, the task is NOT complete
+
+3. **Run `make format-check`** - All files MUST be properly formatted
+   - Zero formatting violations allowed
+   - Run `make format` to auto-fix if needed
+   - If format-check fails, the task is NOT complete
+
+4. **Run `make build`** - TypeScript compilation MUST succeed
+   - Zero build errors allowed
+   - If build fails, the task is NOT complete
+
+**Shortcut**: Run `make ci` to check all gates at once (lint + format-check + test + build)
+
+**Never** claim completion without verifying these gates. **Never** commit code that fails these checks.
+
+### Coverage and Testing Requirements
+
+- **100% code coverage** required for all commits, pushes, and PR merges
+- Block any coverage regression unless explicitly documented
+- Test files: `*.test.ts` / `*.test.js` (Node) or `test_*.py` (Python)
+- Run full test suite before any commit: `make test`
+
+### Conventional Commits
+
+**All commits MUST use [Conventional Commits](https://www.conventionalcommits.org/) format**:
+
+- Format: `<type>(<scope>): <description> (#<issue>)`
+- **Always reference GitHub issue number** when available
+- Types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`, `perf`, `ci`, `build`, `style`
+- Examples: `feat: add authentication (#42)`, `fix: resolve memory leak (#123)`
 
 ## Quick Start
 
@@ -86,7 +157,18 @@ npm run ci          # Run full CI pipeline
 
 ### Build System
 
-This repository uses **npm as the primary build system**, with **Makefile providing generic wrapper commands** for convenience. All make targets delegate to npm scripts in `package.json`.
+This repository uses **Makefile as the primary interface** for all development tasks. Makefile targets delegate to npm scripts, which in turn run the actual build tools. This provides a consistent interface across host development, devcontainer development, and GitHub Actions CI.
+
+**Use Makefile commands** (preferred for consistency):
+
+- `make setup` → Install dependencies and set up git hooks
+- `make build` → Build TypeScript code
+- `make lint` → Run ESLint
+- `make format` → Format code with Prettier
+- `make test` → Run test suite with 100% coverage requirement
+- `make ci` → Run full CI pipeline (lint + format-check + test + build)
+
+**npm scripts** are also available but Makefile is preferred for uniformity.
 
 Run `make help` to see all available targets.
 
@@ -131,13 +213,23 @@ See `.claude/commands/README.md` for complete command documentation.
 
 ### Husky Git Hooks
 
-All projects use husky for pre-commit enforcement:
+This repository uses Husky git hooks for quality enforcement:
 
-- Linting and formatting (lint-staged)
-- Type checking (TypeScript, mypy)
-- **NEVER skip hooks with `--no-verify`**
+**Pre-commit hook** (`.husky/pre-commit`):
 
-Installs automatically via `npm install` (using the `prepare` script in package.json).
+- Runs `lint-staged` on staged files only
+- Auto-fixes with ESLint and Prettier
+- Fast, focused checks on changed files
+
+**Pre-push hook** (`.husky/pre-push`):
+
+- Runs full `make ci` pipeline
+- Enforces 100% test coverage
+- Catches all issues before pushing
+
+**Setup**: Hooks install automatically when you run `make setup` (via the `prepare` npm script).
+
+**NEVER** skip hooks with `--no-verify` - they prevent broken code from entering the repository.
 
 ## Next.js/Node.js Architecture Standards
 
