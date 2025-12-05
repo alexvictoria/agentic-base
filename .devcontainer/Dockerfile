@@ -130,7 +130,8 @@ RUN chmod +x /usr/local/bin/init-firewall.sh && \
   echo "${USERNAME} ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/${USERNAME}-firewall && \
   chmod 0440 /etc/sudoers.d/${USERNAME}-firewall
 
-# Allow node user to fix node_modules permissions without password
-RUN echo "${USERNAME} ALL=(root) NOPASSWD: /bin/chown -R node\\:node /workspace/node_modules" >> /etc/sudoers.d/${USERNAME}-firewall
+# Allow node user to fix node_modules and .claude permissions without password
+RUN echo "${USERNAME} ALL=(root) NOPASSWD: /bin/chown -R node\\:node /workspace/node_modules" >> /etc/sudoers.d/${USERNAME}-firewall && \
+  echo "${USERNAME} ALL=(root) NOPASSWD: /bin/chown -R node\\:node /home/node/.claude" >> /etc/sudoers.d/${USERNAME}-firewall
 
 USER ${USERNAME}
